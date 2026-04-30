@@ -2,10 +2,9 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Marathon GPS Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marathon Tracker — Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
@@ -13,72 +12,248 @@ body {
   background: #0a0f1e;
   color: #fff;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   padding: 32px 20px;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(34,197,94,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(59,130,246,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(168,85,247,0.06) 0%, transparent 60%);
 }
-.logo {
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: .18em;
-  color: rgba(255,255,255,0.3);
+
+.wrap { max-width: 720px; margin: 0 auto; }
+
+.hero {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-top: 20px;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  background: rgba(74,222,128,0.1);
+  border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 100px;
+  font-size: 11px; font-weight: 700;
+  color: #4ade80;
+  letter-spacing: .1em;
   text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.eyebrow .d { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pl 1.4s infinite; }
+@keyframes pl { 0%,100%{opacity:1} 50%{opacity:.3} }
+h1 {
+  font-size: clamp(28px, 6vw, 40px);
+  font-weight: 900;
+  letter-spacing: -.02em;
   margin-bottom: 10px;
+  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; text-align: center; }
-.sub { font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 40px; text-align: center; }
-.cards { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 360px; }
+.tagline {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.cards {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
 .card {
-  display: block;
-  text-decoration: none;
   background: #131929;
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 18px;
-  padding: 22px 22px;
-  transition: transform .15s, border-color .15s;
-  cursor: pointer;
+  padding: 22px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: all .25s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  overflow: hidden;
 }
-.card:active { transform: scale(0.97); }
-.card-icon { font-size: 28px; margin-bottom: 10px; }
-.card-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-.card-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; }
-.card-arrow { float: right; font-size: 20px; color: rgba(255,255,255,0.2); margin-top: -2px; }
-.c1 { border-left: 3px solid #22c55e; }
-.c2 { border-left: 3px solid #3b82f6; }
-.c3 { border-left: 3px solid #f59e0b; }
-.footer { margin-top: 32px; font-size: 11px; color: rgba(255,255,255,0.18); text-align: center; }
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s;
+}
+.card:hover {
+  border-color: rgba(255,255,255,0.16);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+.card:hover::before { transform: scaleX(1); }
+.card:active { transform: translateY(0); }
+
+.card.gps { --accent: #22c55e; }
+.card.admin { --accent: #3b82f6; }
+.card.obs { --accent: #a855f7; }
+.card.demo { --accent: #f59e0b; }
+
+.card-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, transparent), color-mix(in srgb, var(--accent) 10%, transparent));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.card-body { flex: 1; min-width: 0; }
+.card-title {
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  letter-spacing: -.005em;
+}
+.card-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+}
+
+.card-arrow {
+  font-size: 22px;
+  color: rgba(255,255,255,0.3);
+  flex-shrink: 0;
+  transition: transform .25s, color .25s;
+}
+.card:hover .card-arrow {
+  transform: translateX(4px);
+  color: var(--accent);
+}
+
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 28px 0 16px;
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+}
+
+.info-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 18px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+}
+.info-box strong { color: #fff; font-weight: 700; }
+.info-box code {
+  background: rgba(0,0,0,0.4);
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 12px;
+  color: #fcd34d;
+  font-family: 'SF Mono', Menlo, monospace;
+}
+.info-box ul { padding-left: 20px; margin-top: 6px; }
+.info-box li { margin-bottom: 4px; }
+
+.footer {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: .04em;
+}
+.footer .ver {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  margin-right: 6px;
+}
 </style>
 </head>
 <body>
-<div class="logo">Marathon Live Tracker</div>
-<h1>เลือกหน้าที่ต้องการ</h1>
-<p class="sub">42 กิโลเมตร · ติดตาม 4 นักวิ่ง</p>
+<div class="wrap">
 
-<div class="cards">
-  <a class="card c1" href="gps_sender.html">
-    <div class="card-arrow">›</div>
-    <div class="card-icon">📍</div>
-    <div class="card-title">ช่างภาพ — ส่ง GPS</div>
-    <div class="card-desc">เปิดหน้านี้บน iPhone · ส่งตำแหน่งอัตโนมัติทุก 5 วินาที</div>
-  </a>
+  <div class="hero">
+    <div class="eyebrow"><span class="d"></span>LIVE TRACKER</div>
+    <h1>Marathon GPS Tracker</h1>
+    <p class="tagline">ระบบติดตามตำแหน่งนักวิ่ง 4 คน · จัดการธงชาติ ระยะเป้าหมาย และแสดงผลใน OBS</p>
+  </div>
 
-  <a class="card c2" href="admin_dashboard.html">
-    <div class="card-arrow">›</div>
-    <div class="card-icon">🖥️</div>
-    <div class="card-title">Admin — ภาพรวม</div>
-    <div class="card-desc">ดูระยะทางทุกคน · แก้ไขด้วยมือได้กรณีฉุกเฉิน</div>
-  </a>
+  <div class="cards">
 
-  <a class="card c3" href="obs_display.html">
-    <div class="card-arrow">›</div>
-    <div class="card-icon">📺</div>
-    <div class="card-title">OBS Display</div>
-    <div class="card-desc">ใส่ใน OBS เป็น Browser Source · แสดงหลอดระยะทาง live</div>
-  </a>
+    <a href="gps_sender.html" class="card gps">
+      <div class="card-icon">📍</div>
+      <div class="card-body">
+        <div class="card-title">GPS Sender</div>
+        <div class="card-sub">ช่างภาพเปิดบน iPhone · ส่งตำแหน่งทุก 5 วินาที</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="admin_dashboard.html" class="card admin">
+      <div class="card-icon">🎛️</div>
+      <div class="card-body">
+        <div class="card-title">Admin Dashboard</div>
+        <div class="card-sub">ภาพรวม · เลือกธงชาติ · ตั้งระยะเป้าหมาย · แก้ระยะมือ</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="obs_display.html" class="card obs">
+      <div class="card-icon">📺</div>
+      <div class="card-body">
+        <div class="card-title">OBS Display</div>
+        <div class="card-sub">ใส่เป็น Browser Source ใน OBS · แสดงผลสด</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <div class="divider">ทดลอง</div>
+
+    <a href="obs_display.html?demo=1" class="card demo">
+      <div class="card-icon">🎬</div>
+      <div class="card-body">
+        <div class="card-title">OBS Display (Demo)</div>
+        <div class="card-sub">ทดลองดูหน้าตา OBS — มีนักวิ่งจำลอง 4 คน วิ่งจริง</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+  </div>
+
+  <div class="info-box">
+    <strong>วิธีใช้</strong>
+    <ul>
+      <li>ช่างภาพเปิด <code>GPS Sender</code> บน iPhone — เลือกหมายเลขช่างภาพ ใส่ชื่อนักวิ่ง ตั้งระยะเป้า แล้วกดเริ่ม</li>
+      <li>ทีมงาน Live เปิด <code>Admin Dashboard</code> เพื่อเลือกธงชาติให้แต่ละคน และดูภาพรวม</li>
+      <li>ใส่ <code>OBS Display</code> เป็น Browser Source ใน OBS — พื้นหลังโปร่งใส 680×220px</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <span class="ver">v1.1</span>
+    powered by Firebase Realtime Database
+  </div>
+
 </div>
-
-<div class="footer">powered by Firebase Realtime Database</div>
 </body>
 </html>
