@@ -13,19 +13,34 @@ body {
   color: #fff;
   padding: 24px 20px;
   min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(168,85,247,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 20% 100%, rgba(34,197,94,0.05) 0%, transparent 60%);
 }
 .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
-h1 { font-size: 20px; font-weight: 800; }
+h1 { font-size: 20px; font-weight: 800; letter-spacing: -.01em; }
 .live-badge { background: #14532d; color: #4ade80; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 100px; letter-spacing: .06em; }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; display: inline-block; margin-right: 5px; animation: bl 1.4s infinite; }
 @keyframes bl { 0%,100%{opacity:1} 50%{opacity:.2} }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 24px; }
 .runner-card {
   background: #131929;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
   padding: 18px;
+  position: relative;
+  overflow: hidden;
 }
+.runner-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+}
+.runner-card.c1::before { background: #f59e0b; }
+.runner-card.c2::before { background: #9ca3af; }
+.runner-card.c3::before { background: #cd7c45; }
+.runner-card.c4::before { background: #34d399; }
+
 .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .rank-badge {
   width: 30px; height: 30px; border-radius: 50%;
@@ -36,29 +51,52 @@ h1 { font-size: 20px; font-weight: 800; }
 .rk2 { background: #9ca3af; color: #1a1a1a; }
 .rk3 { background: #cd7c45; color: #2a1000; }
 .rk4 { background: #34d399; color: #022c1e; }
-.runner-name { font-size: 15px; font-weight: 700; }
-.runner-sub { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+.flag-btn {
+  width: 36px; height: 36px;
+  background: #0a0f1e;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color .2s;
+}
+.flag-btn:hover { border-color: #60a5fa; }
+
+.runner-name { font-size: 15px; font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.runner-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+
 .bar-wrap { height: 12px; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; margin-bottom: 8px; }
 .bar-fill { height: 100%; border-radius: 100px; transition: width 1s ease; }
 .km-row { display: flex; justify-content: space-between; font-size: 13px; }
 .km-main { font-weight: 700; }
 .km-of { color: rgba(255,255,255,0.35); }
-.override { margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; }
-.override label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .04em; display: block; margin-bottom: 5px; }
-.ovr-row { display: flex; gap: 8px; }
-input[type=number] {
+
+.controls { margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; display: grid; gap: 10px; }
+.ctrl-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; display: block; margin-bottom: 5px; }
+.ctrl-row { display: flex; gap: 8px; }
+.ctrl-row input {
   flex: 1; padding: 8px 10px;
   background: #0a0f1e; border: 1px solid rgba(255,255,255,0.12);
   border-radius: 8px; color: #fff; font-size: 14px;
-  font-family: 'Sarabun', sans-serif;
+  font-family: 'Sarabun', sans-serif; outline: none;
+  min-width: 0;
 }
+.ctrl-row input:focus { border-color: #60a5fa; }
 .btn-set {
-  padding: 8px 16px; border-radius: 8px; border: none;
+  padding: 8px 14px; border-radius: 8px; border: none;
   background: #1d4ed8; color: #fff; font-size: 13px;
   font-weight: 700; font-family: 'Sarabun', sans-serif; cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .btn-set:active { background: #1e40af; }
-.section-title { font-size: 12px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+.btn-set.alt { background: #15803d; }
+.btn-set.alt:active { background: #166534; }
+
+.section-title { font-size: 12px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; font-weight: 600; }
 .log-box {
   background: #131929; border: 1px solid rgba(255,255,255,0.07);
   border-radius: 12px; padding: 14px 16px; font-size: 12px;
@@ -68,13 +106,71 @@ input[type=number] {
 .log-entry { border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 4px; }
 .log-entry:last-child { border-bottom: none; }
 .conn-status { text-align: center; font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 16px; }
+
+/* ── Flag picker modal ── */
+.modal-bg {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: #131929;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%; max-width: 440px;
+  max-height: 80vh;
+  display: flex; flex-direction: column;
+}
+.modal-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+.flag-search {
+  width: 100%; padding: 10px 12px;
+  background: #0a0f1e; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px; color: #fff; font-size: 14px;
+  font-family: 'Sarabun', sans-serif; outline: none;
+  margin-bottom: 12px;
+}
+.flag-search:focus { border-color: #60a5fa; }
+.flag-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 6px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.flag-grid::-webkit-scrollbar { width: 6px; }
+.flag-grid::-webkit-scrollbar-track { background: transparent; }
+.flag-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.flag-cell {
+  background: #0a0f1e;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 8px 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+}
+.flag-cell:hover { border-color: #60a5fa; transform: scale(1.05); }
+.flag-cell .em { font-size: 24px; line-height: 1.2; }
+.flag-cell .nm { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 2px; letter-spacing: .04em; }
+.modal-close {
+  margin-top: 12px; padding: 10px;
+  background: rgba(255,255,255,0.06); color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+  font-family: 'Sarabun', sans-serif; cursor: pointer;
+}
 </style>
 </head>
 <body>
 <div class="top">
   <div>
     <h1>Marathon Admin Dashboard</h1>
-    <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:3px">ติดตาม 4 นักวิ่ง · 42 กิโลเมตร</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:3px">ติดตาม 4 นักวิ่ง · จัดการธงและระยะทางเป้าหมาย</div>
   </div>
   <div class="live-badge"><span class="dot"></span>LIVE</div>
 </div>
@@ -85,11 +181,22 @@ input[type=number] {
 <div class="log-box" id="logBox">รอข้อมูล...</div>
 <div class="conn-status" id="connStatus">กำลังเชื่อมต่อ Firebase...</div>
 
+<!-- Flag picker -->
+<div class="modal-bg" id="flagModal" onclick="closeFlagPicker(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">เลือกธงชาติ</div>
+    <div class="modal-sub" id="flagModalSub">นักวิ่ง</div>
+    <input type="text" class="flag-search" id="flagSearch" placeholder="ค้นหา (เช่น Thai, JP, ญี่ปุ่น)..." oninput="filterFlags()">
+    <div class="flag-grid" id="flagGrid"></div>
+    <button class="modal-close" onclick="closeFlagPicker()">ปิด</button>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, get, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ===== ตั้งค่า Firebase Config ตรงนี้ (เหมือนกับไฟล์อื่น) =====
+// ===== Firebase =====
 const firebaseConfig = {
   apiKey: "AIzaSyB9RxP_jFuecXLyT7szJMnQYywIeVuqk34",
   authDomain: "marathon-tracker-f7e06.firebaseapp.com",
@@ -99,13 +206,13 @@ const firebaseConfig = {
   messagingSenderId: "217799472779",
   appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
 };
-// ================================================================
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+window._db = db; window._ref = ref; window._set = set; window._update = update;
+// =====================
 
-const TOTAL = 42;
 const rankClass = ['rk1','rk2','rk3','rk4'];
+const cardClass = ['c1','c2','c3','c4'];
 const barColors = ['#f59e0b','#9ca3af','#cd7c45','#34d399'];
 const logs = [];
 
@@ -115,26 +222,41 @@ function addLog(msg) {
   if (logs.length > 30) logs.pop();
   document.getElementById('logBox').innerHTML = logs.map(l=>`<div class="log-entry">${l}</div>`).join('');
 }
+window._addLog = addLog;
 
-function manualSet(key, idx) {
+window.manualSet = function(key, idx) {
   const val = parseFloat(document.getElementById('inp_'+key).value);
-  if (isNaN(val) || val < 0 || val > 42) { alert('ใส่ตัวเลข 0–42 กม.'); return; }
+  const goal = parseFloat(document.getElementById('goalInp_'+key).value) || 42;
+  if (isNaN(val) || val < 0 || val > goal) { alert('ใส่ตัวเลข 0–'+goal+' กม.'); return; }
   const name = document.getElementById('lbl_'+key).textContent;
   set(ref(db, 'runners/'+key+'/km'), parseFloat(val.toFixed(2)));
   addLog(`[Manual] ${name} → ${val.toFixed(2)} กม.`);
-}
-window.manualSet = manualSet;
+};
+
+window.setGoal = function(key, idx) {
+  const val = parseFloat(document.getElementById('goalInp_'+key).value);
+  if (isNaN(val) || val < 1 || val > 200) { alert('ใส่เป้าหมาย 1–200 กม.'); return; }
+  const name = document.getElementById('lbl_'+key).textContent;
+  set(ref(db, 'runners/'+key+'/goal'), val);
+  addLog(`[Goal] ${name} → ${val} กม.`);
+};
+
+let currentRunners = {};
 
 function renderCard(key, data, idx) {
   const km = data.km || 0;
+  const goal = data.goal || 42;
   const name = data.name || ('นักวิ่ง '+(idx+1));
-  const pct = Math.min(100, (km/TOTAL)*100);
+  const flag = data.flag || '🏁';
+  const pct = Math.min(100, (km/goal)*100);
   const acc = data.acc ? '±'+data.acc+'ม.' : '—';
+
   return `
-  <div class="runner-card">
+  <div class="runner-card ${cardClass[idx]}">
     <div class="card-header">
       <div class="rank-badge ${rankClass[idx]}">${idx+1}</div>
-      <div>
+      <button class="flag-btn" onclick="openFlagPicker('${key}')" title="เลือกธงชาติ">${flag}</button>
+      <div style="flex:1; min-width:0">
         <div class="runner-name" id="lbl_${key}">${name}</div>
         <div class="runner-sub">GPS แม่นยำ: ${acc}</div>
       </div>
@@ -142,13 +264,23 @@ function renderCard(key, data, idx) {
     <div class="bar-wrap"><div class="bar-fill" style="width:${pct.toFixed(1)}%;background:${barColors[idx]}"></div></div>
     <div class="km-row">
       <span class="km-main">${km.toFixed(2)} กม.</span>
-      <span class="km-of">/ ${TOTAL} กม. (${pct.toFixed(0)}%)</span>
+      <span class="km-of">/ ${goal} กม. (${pct.toFixed(0)}%)</span>
     </div>
-    <div class="override">
-      <label>แก้ระยะทางด้วยมือ</label>
-      <div class="ovr-row">
-        <input type="number" id="inp_${key}" min="0" max="42" step="0.1" placeholder="${km.toFixed(1)}">
-        <button class="btn-set" onclick="manualSet('${key}',${idx})">ตั้งค่า</button>
+
+    <div class="controls">
+      <div>
+        <span class="ctrl-label">ระยะทางเป้าหมาย</span>
+        <div class="ctrl-row">
+          <input type="number" id="goalInp_${key}" min="1" max="200" step="1" value="${goal}">
+          <button class="btn-set alt" onclick="setGoal('${key}',${idx})">ตั้งเป้า</button>
+        </div>
+      </div>
+      <div>
+        <span class="ctrl-label">แก้ระยะด้วยมือ</span>
+        <div class="ctrl-row">
+          <input type="number" id="inp_${key}" min="0" max="200" step="0.1" placeholder="${km.toFixed(1)}">
+          <button class="btn-set" onclick="manualSet('${key}',${idx})">ตั้งค่า</button>
+        </div>
       </div>
     </div>
   </div>`;
@@ -156,6 +288,8 @@ function renderCard(key, data, idx) {
 
 onValue(ref(db, 'runners'), snap => {
   const data = snap.val() || {};
+  currentRunners = data;
+  window._currentRunners = data;
   const grid = document.getElementById('grid');
   let html = '';
   let anyUpdate = false;
@@ -167,8 +301,84 @@ onValue(ref(db, 'runners'), snap => {
   }
   grid.innerHTML = html;
   document.getElementById('connStatus').textContent = 'เชื่อมต่อ Firebase แล้ว · อัปเดตอัตโนมัติ';
-  if (anyUpdate) addLog('รับข้อมูล GPS ล่าสุด');
+  if (anyUpdate && logs.length === 0) addLog('รับข้อมูล GPS ล่าสุด');
 });
+</script>
+
+<script>
+// ─── Flag picker (~70 countries) ───
+const FLAGS = [
+  ['🇹🇭','Thailand','TH','ไทย'],['🇺🇸','USA','US','อเมริกา'],['🇬🇧','UK','GB','อังกฤษ'],
+  ['🇯🇵','Japan','JP','ญี่ปุ่น'],['🇰🇷','S.Korea','KR','เกาหลี'],['🇨🇳','China','CN','จีน'],
+  ['🇩🇪','Germany','DE','เยอรมัน'],['🇫🇷','France','FR','ฝรั่งเศส'],['🇮🇹','Italy','IT','อิตาลี'],
+  ['🇪🇸','Spain','ES','สเปน'],['🇵🇹','Portugal','PT','โปรตุเกส'],['🇳🇱','Netherlands','NL','เนเธอร์แลนด์'],
+  ['🇧🇪','Belgium','BE','เบลเยียม'],['🇨🇭','Switzerland','CH','สวิตซ์'],['🇦🇹','Austria','AT','ออสเตรีย'],
+  ['🇸🇪','Sweden','SE','สวีเดน'],['🇳🇴','Norway','NO','นอร์เวย์'],['🇩🇰','Denmark','DK','เดนมาร์ก'],
+  ['🇫🇮','Finland','FI','ฟินแลนด์'],['🇮🇪','Ireland','IE','ไอร์แลนด์'],['🇵🇱','Poland','PL','โปแลนด์'],
+  ['🇨🇿','Czech','CZ','เช็ก'],['🇬🇷','Greece','GR','กรีซ'],['🇹🇷','Turkey','TR','ตุรกี'],
+  ['🇷🇺','Russia','RU','รัสเซีย'],['🇺🇦','Ukraine','UA','ยูเครน'],
+  ['🇨🇦','Canada','CA','แคนาดา'],['🇲🇽','Mexico','MX','เม็กซิโก'],['🇧🇷','Brazil','BR','บราซิล'],
+  ['🇦🇷','Argentina','AR','อาร์เจนตินา'],['🇨🇱','Chile','CL','ชิลี'],['🇨🇴','Colombia','CO','โคลอมเบีย'],
+  ['🇵🇪','Peru','PE','เปรู'],['🇻🇪','Venezuela','VE','เวเนซุเอลา'],
+  ['🇦🇺','Australia','AU','ออสเตรเลีย'],['🇳🇿','New Zealand','NZ','นิวซีแลนด์'],
+  ['🇮🇩','Indonesia','ID','อินโดนีเซีย'],['🇲🇾','Malaysia','MY','มาเลเซีย'],['🇸🇬','Singapore','SG','สิงคโปร์'],
+  ['🇵🇭','Philippines','PH','ฟิลิปปินส์'],['🇻🇳','Vietnam','VN','เวียดนาม'],['🇲🇲','Myanmar','MM','พม่า'],
+  ['🇰🇭','Cambodia','KH','กัมพูชา'],['🇱🇦','Laos','LA','ลาว'],['🇧🇳','Brunei','BN','บรูไน'],
+  ['🇮🇳','India','IN','อินเดีย'],['🇵🇰','Pakistan','PK','ปากีสถาน'],['🇧🇩','Bangladesh','BD','บังกลาเทศ'],
+  ['🇱🇰','Sri Lanka','LK','ศรีลังกา'],['🇳🇵','Nepal','NP','เนปาล'],
+  ['🇹🇼','Taiwan','TW','ไต้หวัน'],['🇭🇰','Hong Kong','HK','ฮ่องกง'],['🇲🇴','Macau','MO','มาเก๊า'],
+  ['🇲🇳','Mongolia','MN','มองโกเลีย'],
+  ['🇿🇦','S.Africa','ZA','แอฟริกาใต้'],['🇪🇬','Egypt','EG','อียิปต์'],['🇲🇦','Morocco','MA','โมร็อกโก'],
+  ['🇰🇪','Kenya','KE','เคนยา'],['🇪🇹','Ethiopia','ET','เอธิโอเปีย'],['🇳🇬','Nigeria','NG','ไนจีเรีย'],
+  ['🇸🇦','Saudi','SA','ซาอุ'],['🇦🇪','UAE','AE','ยูเออี'],['🇮🇱','Israel','IL','อิสราเอล'],
+  ['🇮🇷','Iran','IR','อิหร่าน'],['🇶🇦','Qatar','QA','กาตาร์'],['🇰🇼','Kuwait','KW','คูเวต'],
+  ['🇫🇯','Fiji','FJ','ฟิจิ'],['🇮🇸','Iceland','IS','ไอซ์แลนด์'],['🏁','Generic','--','ไม่ระบุ']
+];
+
+let pickerKey = null;
+
+window.openFlagPicker = function(key) {
+  pickerKey = key;
+  const data = (window._currentRunners || {})[key] || {};
+  document.getElementById('flagModalSub').textContent = data.name || 'นักวิ่ง';
+  document.getElementById('flagSearch').value = '';
+  renderFlags(FLAGS);
+  document.getElementById('flagModal').classList.add('show');
+};
+
+window.closeFlagPicker = function(e) {
+  if (e && e.target.id !== 'flagModal') return;
+  document.getElementById('flagModal').classList.remove('show');
+};
+
+window.filterFlags = function() {
+  const q = document.getElementById('flagSearch').value.toLowerCase().trim();
+  if (!q) return renderFlags(FLAGS);
+  const filtered = FLAGS.filter(f =>
+    f[1].toLowerCase().includes(q) ||
+    f[2].toLowerCase().includes(q) ||
+    f[3].toLowerCase().includes(q)
+  );
+  renderFlags(filtered);
+};
+
+function renderFlags(list) {
+  const grid = document.getElementById('flagGrid');
+  grid.innerHTML = list.map(f =>
+    `<div class="flag-cell" onclick="pickFlag('${f[0]}')">
+      <div class="em">${f[0]}</div>
+      <div class="nm">${f[2]}</div>
+    </div>`
+  ).join('');
+}
+
+window.pickFlag = function(emoji) {
+  if (!pickerKey) return;
+  window._set(window._ref(window._db, 'runners/'+pickerKey+'/flag'), emoji);
+  const name = ((window._currentRunners||{})[pickerKey]||{}).name || pickerKey;
+  window._addLog(`[Flag] ${name} → ${emoji}`);
+  document.getElementById('flagModal').classList.remove('show');
+};
 </script>
 </body>
 </html>
