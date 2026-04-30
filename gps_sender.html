@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>GPS ช่างภาพ</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: #0a0f1e;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+}
+.card {
+  background: #131929;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 380px;
+}
+h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.sub { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 24px; }
+.field { margin-bottom: 16px; }
+label { font-size: 12px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; letter-spacing: .05em; text-transform: uppercase; }
+select, input {
+  width: 100%;
+  padding: 12px 14px;
+  background: #0a0f1e;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-family: 'Sarabun', sans-serif;
+  appearance: none;
+}
+select option { background: #131929; }
+.btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: 'Sarabun', sans-serif;
+  cursor: pointer;
+  transition: all .2s;
+  margin-top: 8px;
+}
+.btn-start { background: #22c55e; color: #052e16; }
+.btn-start:active { transform: scale(0.97); background: #16a34a; }
+.btn-stop { background: #ef4444; color: #fff; display: none; }
+.btn-stop:active { transform: scale(0.97); background: #dc2626; }
+.status-box {
+  margin-top: 20px;
+  background: #0a0f1e;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,0.07);
+  display: none;
+}
+.status-box.show { display: block; }
+.status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.status-row:last-child { margin-bottom: 0; }
+.s-label { font-size: 12px; color: rgba(255,255,255,0.4); }
+.s-val { font-size: 14px; font-weight: 700; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block; margin-right: 6px; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.8)} }
+.err { color: #f87171; font-size: 13px; margin-top: 12px; text-align: center; display: none; }
+.route-warn {
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #fcd34d;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>GPS ช่างภาพ</h1>
+  <p class="sub">เปิดทิ้งไว้ระหว่างวิ่ง · ส่งอัตโนมัติทุก 5 วินาที</p>
+
+  <div class="route-warn">
+    ⚠️ ต้องเปิดหน้าจอทิ้งไว้ตลอด และอนุญาต GPS เมื่อ Safari ถาม
+  </div>
+
+  <div class="field">
+    <label>คุณคือช่างภาพคนที่</label>
+    <select id="runnerSel">
+      <option value="runner1">ช่างภาพ 1</option>
+      <option value="runner2">ช่างภาพ 2</option>
+      <option value="runner3">ช่างภาพ 3</option>
+      <option value="runner4">ช่างภาพ 4</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>ชื่อนักวิ่งที่ตาม</label>
+    <input type="text" id="runnerName" placeholder="ชื่อนักวิ่ง" value="">
+  </div>
+
+  <div class="field">
+    <label>จุดเริ่มต้น (lat, lng) — ใส่พิกัด GPS ตรงเส้นสตาร์ท</label>
+    <input type="text" id="startCoord" placeholder="เช่น 13.7563, 100.5018">
+  </div>
+
+  <button class="btn btn-start" id="btnStart" onclick="startTracking()">เริ่มส่ง GPS</button>
+  <button class="btn btn-stop" id="btnStop" onclick="stopTracking()">หยุดส่ง GPS</button>
+
+  <div class="status-box" id="statusBox">
+    <div class="status-row">
+      <span class="s-label"><span class="dot"></span>สถานะ</span>
+      <span class="s-val" id="stStatus">กำลังส่ง...</span>
+    </div>
+    <div class="status-row">
+      <span class="s-label">ระยะทาง</span>
+      <span class="s-val" id="stKm">0.00 กม.</span>
+    </div>
+    <div class="status-row">
+      <span class="s-label">ความแม่นยำ GPS</span>
+      <span class="s-val" id="stAcc">—</span>
+    </div>
+    <div class="status-row">
+      <span class="s-label">อัปเดตล่าสุด</span>
+      <span class="s-val" id="stTime">—</span>
+    </div>
+  </div>
+  <p class="err" id="errMsg"></p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ===== ตั้งค่า Firebase Config ตรงนี้ (เหมือนกับไฟล์อื่น) =====
+const firebaseConfig = {
+  apiKey: "AIzaSyB9RxP_jFuecXLyT7szJMnQYywIeVuqk34",
+  authDomain: "marathon-tracker-f7e06.firebaseapp.com",
+  databaseURL: "https://marathon-tracker-f7e06-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "marathon-tracker-f7e06",
+  storageBucket: "marathon-tracker-f7e06.firebasestorage.app",
+  messagingSenderId: "217799472779",
+  appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
+};
+// ================================================================
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let watchId = null;
+let startLat = null, startLng = null;
+let lastLat = null, lastLng = null;
+let totalKm = 0;
+let intervalId = null;
+let lastPos = null;
+
+function toRad(d) { return d * Math.PI / 180; }
+function haversine(la1, lo1, la2, lo2) {
+  const R = 6371;
+  const dLa = toRad(la2 - la1), dLo = toRad(lo2 - lo1);
+  const a = Math.sin(dLa/2)**2 + Math.cos(toRad(la1))*Math.cos(toRad(la2))*Math.sin(dLo/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+window.startTracking = async function() {
+  const key = document.getElementById('runnerSel').value;
+  const name = document.getElementById('runnerName').value.trim() || ('ช่างภาพ ' + key.slice(-1));
+  const coordRaw = document.getElementById('startCoord').value.trim();
+  const err = document.getElementById('errMsg');
+  err.style.display = 'none';
+
+  if (coordRaw) {
+    const parts = coordRaw.split(',');
+    if (parts.length === 2) {
+      startLat = parseFloat(parts[0].trim());
+      startLng = parseFloat(parts[1].trim());
+    }
+  }
+
+  if (!navigator.geolocation) {
+    err.textContent = 'เบราว์เซอร์นี้ไม่รองรับ GPS กรุณาใช้ Safari';
+    err.style.display = 'block'; return;
+  }
+
+  // Save name immediately
+  await set(ref(db, 'runners/' + key + '/name'), name);
+  await set(ref(db, 'runners/' + key + '/km'), 0);
+
+  document.getElementById('btnStart').style.display = 'none';
+  document.getElementById('btnStop').style.display = 'block';
+  document.getElementById('statusBox').classList.add('show');
+  document.getElementById('stStatus').textContent = 'กำลังหา GPS...';
+
+  watchId = navigator.geolocation.watchPosition(
+    pos => { lastPos = pos; updateFromPos(pos, key, name); },
+    e => {
+      err.textContent = 'GPS Error: ' + e.message;
+      err.style.display = 'block';
+    },
+    { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
+  );
+
+  // Send every 5 seconds
+  intervalId = setInterval(() => {
+    if (lastPos) updateFromPos(lastPos, key, name);
+  }, 5000);
+};
+
+function updateFromPos(pos, key, name) {
+  const lat = pos.coords.latitude;
+  const lng = pos.coords.longitude;
+  const acc = pos.coords.accuracy;
+
+  if (!startLat) { startLat = lat; startLng = lng; }
+  if (lastLat !== null) {
+    const d = haversine(lastLat, lastLng, lat, lng);
+    if (d > 0.005 && d < 0.5) totalKm += d; // ignore noise <5m and jumps >500m
+  }
+  lastLat = lat; lastLng = lng;
+
+  const km = Math.min(42, totalKm);
+  set(ref(db, 'runners/' + key), { name, km: parseFloat(km.toFixed(3)), lat, lng, acc: Math.round(acc) });
+
+  document.getElementById('stStatus').textContent = 'กำลังส่ง ✓';
+  document.getElementById('stKm').textContent = km.toFixed(2) + ' กม.';
+  document.getElementById('stAcc').textContent = '±' + Math.round(acc) + ' ม.';
+  document.getElementById('stTime').textContent = new Date().toLocaleTimeString('th-TH');
+}
+
+window.stopTracking = function() {
+  if (watchId) navigator.geolocation.clearWatch(watchId);
+  if (intervalId) clearInterval(intervalId);
+  watchId = null; intervalId = null;
+  document.getElementById('btnStart').style.display = 'block';
+  document.getElementById('btnStop').style.display = 'none';
+  document.getElementById('statusBox').classList.remove('show');
+  document.getElementById('stStatus').textContent = 'หยุดแล้ว';
+};
+</script>
+</body>
+</html>

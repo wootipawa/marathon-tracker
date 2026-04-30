@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Marathon OBS Display</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: transparent;
+  font-family: 'Sarabun', sans-serif;
+  padding: 12px;
+  width: 620px;
+}
+.container {
+  background: rgba(0,0,0,0.82);
+  border-radius: 14px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.total-dist {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: .06em;
+}
+.runner-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.runner-row:last-child { margin-bottom: 0; }
+.rank {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  width: 88px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar-wrap {
+  flex: 1;
+  height: 22px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  min-width: 0;
+}
+.bar-text {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.km-badge {
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 86px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.dot-live {
+  width: 7px; height: 7px;
+  background: #4ade80;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  animation: blink 1.4s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+.r1 { background: #f59e0b; color: #3b1f00; }
+.r2 { background: #9ca3af; color: #1a1a1a; }
+.r3 { background: #cd7c45; color: #2a1000; }
+.r4 { background: #34d399; color: #022c1e; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="title"><span class="dot-live"></span>MARATHON 42KM — LIVE</div>
+    <div class="total-dist" id="upd">—</div>
+  </div>
+  <div id="rows"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ===== ตั้งค่า Firebase Config ตรงนี้ =====
+const firebaseConfig = {
+  apiKey: "AIzaSyB9RxP_jFuecXLyT7szJMnQYywIeVuqk34",
+  authDomain: "marathon-tracker-f7e06.firebaseapp.com",
+  databaseURL: "https://marathon-tracker-f7e06-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "marathon-tracker-f7e06",
+  storageBucket: "marathon-tracker-f7e06.firebasestorage.app",
+  messagingSenderId: "217799472779",
+  appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
+};
+// ==========================================
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const TOTAL = 42;
+const colors = [
+  { rank: 'r1', fill: '#f59e0b', text: '#3b1f00', km: '#f59e0b' },
+  { rank: 'r2', fill: '#9ca3af', text: '#1a1a1a', km: '#9ca3af' },
+  { rank: 'r3', fill: '#cd7c45', text: '#2a1000', km: '#cd7c45' },
+  { rank: 'r4', fill: '#34d399', text: '#022c1e', km: '#34d399' },
+];
+
+function render(data) {
+  const rows = document.getElementById('rows');
+  rows.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const r = data['runner' + (i + 1)] || { name: 'นักวิ่ง ' + (i + 1), km: 0 };
+    const pct = Math.min(100, (r.km / TOTAL) * 100);
+    const c = colors[i];
+    const showInBar = pct > 16;
+    rows.innerHTML += `
+      <div class="runner-row">
+        <div class="rank ${c.rank}">${i + 1}</div>
+        <div class="name">${r.name}</div>
+        <div class="bar-wrap">
+          <div class="bar-fill" style="width:${pct.toFixed(1)}%;background:${c.fill}">
+            ${showInBar ? `<span class="bar-text" style="color:${c.text}">${r.km.toFixed(1)} กม.</span>` : ''}
+          </div>
+        </div>
+        <div class="km-badge" style="color:${c.km}">${r.km.toFixed(1)} / ${TOTAL} กม.</div>
+      </div>`;
+  }
+  const now = new Date();
+  document.getElementById('upd').textContent = 'อัปเดต ' + now.toLocaleTimeString('th-TH');
+}
+
+onValue(ref(db, 'runners'), snap => {
+  render(snap.val() || {});
+});
+</script>
+</body>
+</html>

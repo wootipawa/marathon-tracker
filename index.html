@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Marathon GPS Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: #0a0f1e;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+.logo {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; text-align: center; }
+.sub { font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 40px; text-align: center; }
+.cards { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 360px; }
+.card {
+  display: block;
+  text-decoration: none;
+  background: #131929;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 18px;
+  padding: 22px 22px;
+  transition: transform .15s, border-color .15s;
+  cursor: pointer;
+}
+.card:active { transform: scale(0.97); }
+.card-icon { font-size: 28px; margin-bottom: 10px; }
+.card-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.card-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+.card-arrow { float: right; font-size: 20px; color: rgba(255,255,255,0.2); margin-top: -2px; }
+.c1 { border-left: 3px solid #22c55e; }
+.c2 { border-left: 3px solid #3b82f6; }
+.c3 { border-left: 3px solid #f59e0b; }
+.footer { margin-top: 32px; font-size: 11px; color: rgba(255,255,255,0.18); text-align: center; }
+</style>
+</head>
+<body>
+<div class="logo">Marathon Live Tracker</div>
+<h1>เลือกหน้าที่ต้องการ</h1>
+<p class="sub">42 กิโลเมตร · ติดตาม 4 นักวิ่ง</p>
+
+<div class="cards">
+  <a class="card c1" href="gps_sender.html">
+    <div class="card-arrow">›</div>
+    <div class="card-icon">📍</div>
+    <div class="card-title">ช่างภาพ — ส่ง GPS</div>
+    <div class="card-desc">เปิดหน้านี้บน iPhone · ส่งตำแหน่งอัตโนมัติทุก 5 วินาที</div>
+  </a>
+
+  <a class="card c2" href="admin_dashboard.html">
+    <div class="card-arrow">›</div>
+    <div class="card-icon">🖥️</div>
+    <div class="card-title">Admin — ภาพรวม</div>
+    <div class="card-desc">ดูระยะทางทุกคน · แก้ไขด้วยมือได้กรณีฉุกเฉิน</div>
+  </a>
+
+  <a class="card c3" href="obs_display.html">
+    <div class="card-arrow">›</div>
+    <div class="card-icon">📺</div>
+    <div class="card-title">OBS Display</div>
+    <div class="card-desc">ใส่ใน OBS เป็น Browser Source · แสดงหลอดระยะทาง live</div>
+  </a>
+</div>
+
+<div class="footer">powered by Firebase Realtime Database</div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — Marathon Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: #0a0f1e;
+  color: #fff;
+  padding: 24px 20px;
+  min-height: 100vh;
+}
+.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+h1 { font-size: 20px; font-weight: 800; }
+.live-badge { background: #14532d; color: #4ade80; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 100px; letter-spacing: .06em; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; display: inline-block; margin-right: 5px; animation: bl 1.4s infinite; }
+@keyframes bl { 0%,100%{opacity:1} 50%{opacity:.2} }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.runner-card {
+  background: #131929;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 18px;
+}
+.card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.rank-badge {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; flex-shrink: 0;
+}
+.rk1 { background: #f59e0b; color: #3b1f00; }
+.rk2 { background: #9ca3af; color: #1a1a1a; }
+.rk3 { background: #cd7c45; color: #2a1000; }
+.rk4 { background: #34d399; color: #022c1e; }
+.runner-name { font-size: 15px; font-weight: 700; }
+.runner-sub { font-size: 12px; color: rgba(255,255,255,0.4); }
+.bar-wrap { height: 12px; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; margin-bottom: 8px; }
+.bar-fill { height: 100%; border-radius: 100px; transition: width 1s ease; }
+.km-row { display: flex; justify-content: space-between; font-size: 13px; }
+.km-main { font-weight: 700; }
+.km-of { color: rgba(255,255,255,0.35); }
+.override { margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; }
+.override label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .04em; display: block; margin-bottom: 5px; }
+.ovr-row { display: flex; gap: 8px; }
+input[type=number] {
+  flex: 1; padding: 8px 10px;
+  background: #0a0f1e; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px; color: #fff; font-size: 14px;
+  font-family: 'Sarabun', sans-serif;
+}
+.btn-set {
+  padding: 8px 16px; border-radius: 8px; border: none;
+  background: #1d4ed8; color: #fff; font-size: 13px;
+  font-weight: 700; font-family: 'Sarabun', sans-serif; cursor: pointer;
+}
+.btn-set:active { background: #1e40af; }
+.section-title { font-size: 12px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+.log-box {
+  background: #131929; border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px; padding: 14px 16px; font-size: 12px;
+  color: rgba(255,255,255,0.5); line-height: 2; max-height: 180px;
+  overflow-y: auto;
+}
+.log-entry { border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 4px; }
+.log-entry:last-child { border-bottom: none; }
+.conn-status { text-align: center; font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="top">
+  <div>
+    <h1>Marathon Admin Dashboard</h1>
+    <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:3px">ติดตาม 4 นักวิ่ง · 42 กิโลเมตร</div>
+  </div>
+  <div class="live-badge"><span class="dot"></span>LIVE</div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="section-title">ประวัติการอัปเดต</div>
+<div class="log-box" id="logBox">รอข้อมูล...</div>
+<div class="conn-status" id="connStatus">กำลังเชื่อมต่อ Firebase...</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ===== ตั้งค่า Firebase Config ตรงนี้ (เหมือนกับไฟล์อื่น) =====
+const firebaseConfig = {
+  apiKey: "AIzaSyB9RxP_jFuecXLyT7szJMnQYywIeVuqk34",
+  authDomain: "marathon-tracker-f7e06.firebaseapp.com",
+  databaseURL: "https://marathon-tracker-f7e06-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "marathon-tracker-f7e06",
+  storageBucket: "marathon-tracker-f7e06.firebasestorage.app",
+  messagingSenderId: "217799472779",
+  appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
+};
+// ================================================================
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const TOTAL = 42;
+const rankClass = ['rk1','rk2','rk3','rk4'];
+const barColors = ['#f59e0b','#9ca3af','#cd7c45','#34d399'];
+const logs = [];
+
+function addLog(msg) {
+  const t = new Date().toLocaleTimeString('th-TH');
+  logs.unshift('['+t+'] '+msg);
+  if (logs.length > 30) logs.pop();
+  document.getElementById('logBox').innerHTML = logs.map(l=>`<div class="log-entry">${l}</div>`).join('');
+}
+
+function manualSet(key, idx) {
+  const val = parseFloat(document.getElementById('inp_'+key).value);
+  if (isNaN(val) || val < 0 || val > 42) { alert('ใส่ตัวเลข 0–42 กม.'); return; }
+  const name = document.getElementById('lbl_'+key).textContent;
+  set(ref(db, 'runners/'+key+'/km'), parseFloat(val.toFixed(2)));
+  addLog(`[Manual] ${name} → ${val.toFixed(2)} กม.`);
+}
+window.manualSet = manualSet;
+
+function renderCard(key, data, idx) {
+  const km = data.km || 0;
+  const name = data.name || ('นักวิ่ง '+(idx+1));
+  const pct = Math.min(100, (km/TOTAL)*100);
+  const acc = data.acc ? '±'+data.acc+'ม.' : '—';
+  return `
+  <div class="runner-card">
+    <div class="card-header">
+      <div class="rank-badge ${rankClass[idx]}">${idx+1}</div>
+      <div>
+        <div class="runner-name" id="lbl_${key}">${name}</div>
+        <div class="runner-sub">GPS แม่นยำ: ${acc}</div>
+      </div>
+    </div>
+    <div class="bar-wrap"><div class="bar-fill" style="width:${pct.toFixed(1)}%;background:${barColors[idx]}"></div></div>
+    <div class="km-row">
+      <span class="km-main">${km.toFixed(2)} กม.</span>
+      <span class="km-of">/ ${TOTAL} กม. (${pct.toFixed(0)}%)</span>
+    </div>
+    <div class="override">
+      <label>แก้ระยะทางด้วยมือ</label>
+      <div class="ovr-row">
+        <input type="number" id="inp_${key}" min="0" max="42" step="0.1" placeholder="${km.toFixed(1)}">
+        <button class="btn-set" onclick="manualSet('${key}',${idx})">ตั้งค่า</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+onValue(ref(db, 'runners'), snap => {
+  const data = snap.val() || {};
+  const grid = document.getElementById('grid');
+  let html = '';
+  let anyUpdate = false;
+  for (let i = 0; i < 4; i++) {
+    const key = 'runner'+(i+1);
+    const r = data[key] || {};
+    html += renderCard(key, r, i);
+    if (r.km > 0) anyUpdate = true;
+  }
+  grid.innerHTML = html;
+  document.getElementById('connStatus').textContent = 'เชื่อมต่อ Firebase แล้ว · อัปเดตอัตโนมัติ';
+  if (anyUpdate) addLog('รับข้อมูล GPS ล่าสุด');
+});
+</script>
+</body>
+</html>
