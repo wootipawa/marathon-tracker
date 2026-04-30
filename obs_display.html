@@ -3,35 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Marathon OBS — Single Runner</title>
-<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Sarabun:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Kanit:wght@300;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --c1: #FACC15;
   --c2: #EC4899;
-  --c3: #22D3EE;
+  --c3: #00f2ea;
   --c4: #A855F7;
-  --green: #00ff66;
-
-  /* Tuned values from preview */
-  --stage-width: 1200px;
-  --tag-size: 120px;
-  --tag-font-size: 80px;
-  --name-font-size: 52px;
-  --km-font-size: 110px;
-  --unit-font-size: 36px;
-  --scale-font-size: 28px;
-  --box-padding-top: 36px;
-  --box-padding-bottom: 10px;
-  --km-margin-bottom: 38px;
-  --scale-bar-gap: 10px;
-  --stripe-height: 2px;
-  --bar-height: 12px;
-  --track-color: transparent;
-  --panel-alpha: 0.85;
-
-  --text: #ffffff;
+  --green: #10ff49;
+  --accent: #00f2ea;
+  --panel-bg: #4a4a4a;
+  --footer-bg: #333;
+  --accent-bottom: #555;
 }
 
 html, body {
@@ -39,8 +24,8 @@ html, body {
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-  font-family: 'Russo One', 'Sarabun', sans-serif;
-  color: var(--text);
+  font-family: 'Orbitron', sans-serif;
+  color: #ffffff;
 }
 
 /* ── Container — bottom-left ── */
@@ -48,146 +33,131 @@ html, body {
   position: fixed;
   left: 60px;
   bottom: 60px;
-  width: min(var(--stage-width), calc(100vw - 120px));
+  width: 950px;
   opacity: 0;
   animation: fadeIn 0.6s 0.1s forwards;
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── TOP ROW ── */
-.top-row {
+/* ── CARD ── */
+.card {
+  width: 100%;
+  background-color: var(--panel-bg);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+/* ── HEADER ── */
+.header {
   position: relative;
-  height: var(--tag-size);
-}
-
-.num-tag {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--tag-size);
-  height: var(--tag-size);
-  background: var(--accent);
+  height: 80px;
+  border-bottom: 5px solid var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Russo One', sans-serif;
-  font-size: var(--tag-font-size);
+}
+
+.rank-box {
+  background-color: var(--accent);
   color: #ffffff;
-  line-height: 1;
-  z-index: 2;
+  width: 100px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 55px;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .name-box {
-  width: 100%;
-  height: 100%;
-  background: rgba(75, 75, 75, var(--panel-alpha));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.accent-stripe {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: var(--stripe-height);
-  background: var(--accent);
-  z-index: 3;
-}
-
-.name-text {
-  font-family: 'Russo One', sans-serif;
-  font-size: var(--name-font-size);
-  letter-spacing: 0.04em;
-  color: var(--text);
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  line-height: 1;
-}
-
-/* ── BOTTOM BOX ── */
-.bottom-box {
-  background: rgba(75, 75, 75, var(--panel-alpha));
-  padding: var(--box-padding-top) 0 var(--box-padding-bottom) 0;
-  position: relative;
-  margin-top: var(--stripe-height);
-}
-
-.km-display {
-  text-align: center;
-  font-family: 'Russo One', sans-serif;
-  line-height: 1;
-  margin-bottom: var(--km-margin-bottom);
-  padding: 0 40px;
-}
-.km-num {
-  font-size: var(--km-font-size);
-  letter-spacing: 0.01em;
-  color: var(--text);
-}
-.km-unit {
-  font-size: var(--unit-font-size);
-  color: var(--text);
-  margin-left: 8px;
-  letter-spacing: 0.04em;
-}
-
-.scale-row {
-  position: relative;
-  height: 40px;
-  margin-bottom: var(--scale-bar-gap);
-}
-.scale-tick {
-  position: absolute;
-  top: 0;
-  transform: translateX(-50%);
-  font-family: 'Russo One', sans-serif;
-  font-size: var(--scale-font-size);
   color: #ffffff;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-.bar-track {
-  height: var(--bar-height);
-  background: var(--track-color);
-  position: relative;
-  overflow: hidden;
+  font-size: 42px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-align: center;
   width: 100%;
 }
-.bar-fill {
-  height: 100%;
-  background: var(--green);
-  width: 0%;
-  transition: width 1.2s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 0 16px rgba(0,255,102,0.5);
+
+/* ── CONTENT ── */
+.content {
+  padding: 50px 0;
+  text-align: center;
+  color: #ffffff;
 }
 
-/* No-data */
+.distance-value {
+  font-size: 130px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.unit {
+  font-size: 50px;
+  margin-left: 15px;
+  font-weight: 300;
+  font-family: 'Kanit', sans-serif;
+}
+
+/* ── FOOTER ── */
+.footer {
+  width: 100%;
+  background-color: var(--footer-bg);
+}
+
+.labels {
+  display: flex;
+  justify-content: space-around;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 12px 0;
+  font-weight: 300;
+  font-family: 'Kanit', sans-serif;
+}
+
+.progress-container {
+  width: 100%;
+  height: 18px;
+  background-color: #ffffff;
+  display: flex;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background-color: var(--green);
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 12px rgba(16,255,73,0.5);
+}
+
+.bottom-accent {
+  height: 12px;
+  background-color: var(--accent-bottom);
+  width: 100%;
+}
+
+/* ── No data ── */
 .no-data {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Russo One', sans-serif;
+  font-family: 'Orbitron', sans-serif;
   font-size: 32px;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.3);
 }
-body.demo .no-data { display: none; }
 
+/* ── Demo mode ── */
 body.demo {
-  background:
-    radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%) !important;
+  background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%) !important;
 }
 body.demo::before {
   content: 'DEMO';
@@ -195,11 +165,11 @@ body.demo::before {
   top: 16px; left: 50%;
   transform: translateX(-50%);
   padding: 4px 12px;
-  background: rgba(234,179,8,0.2);
-  border: 1px solid rgba(234,179,8,0.6);
+  background: rgba(0,242,234,0.15);
+  border: 1px solid rgba(0,242,234,0.5);
   border-radius: 3px;
-  color: #FCD34D;
-  font-family: 'Russo One', sans-serif;
+  color: #00f2ea;
+  font-family: 'Orbitron', sans-serif;
   font-size: 12px;
   letter-spacing: 0.18em;
   z-index: 1000;
@@ -208,32 +178,34 @@ body.demo::before {
 </head>
 <body>
 
-<div class="stage" id="stage" style="display: none;">
+<div class="stage" id="stage" style="display:none;">
+  <div class="card">
 
-  <div class="top-row">
-    <div class="num-tag" id="numTag">1</div>
-    <div class="name-box">
-      <div class="name-text" id="nameText">RUNNER</div>
+    <!-- HEADER -->
+    <div class="header">
+      <div class="rank-box" id="numTag">1</div>
+      <div class="name-box" id="nameText">RUNNER</div>
     </div>
-    <div class="accent-stripe"></div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <span class="distance-value" id="kmNum">0.00</span><span class="unit">KM</span>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="labels">
+        <span>10K</span>
+        <span>20K</span>
+        <span>30K</span>
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar" id="barFill"></div>
+      </div>
+      <div class="bottom-accent"></div>
+    </div>
+
   </div>
-
-  <div class="bottom-box">
-    <div class="km-display">
-      <span class="km-num" id="kmNum">0.00</span><span class="km-unit">KM</span>
-    </div>
-
-    <div class="scale-row">
-      <div class="scale-tick" style="left:25%">10K</div>
-      <div class="scale-tick" style="left:50%">20K</div>
-      <div class="scale-tick" style="left:75%">30K</div>
-    </div>
-
-    <div class="bar-track">
-      <div class="bar-fill" id="barFill"></div>
-    </div>
-  </div>
-
 </div>
 
 <div class="no-data" id="noData">WAITING FOR DATA…</div>
@@ -252,13 +224,14 @@ const firebaseConfig = {
   appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
 };
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db  = getDatabase(app);
 
-const params = new URLSearchParams(window.location.search);
+const params    = new URLSearchParams(window.location.search);
 const runnerNum = Math.min(4, Math.max(1, parseInt(params.get('runner') || '1')));
-const isDemo = params.get('demo') === '1';
+const isDemo    = params.get('demo') === '1';
 
-const COLORS = ['#FACC15', '#EC4899', '#22D3EE', '#A855F7'];
+// Color per runner — accent changes rank-box & header border
+const COLORS = ['#FACC15', '#EC4899', '#00f2ea', '#A855F7'];
 document.documentElement.style.setProperty('--accent', COLORS[runnerNum - 1]);
 document.getElementById('numTag').textContent = runnerNum;
 
@@ -272,17 +245,17 @@ function formatName(name, idx) {
 }
 
 function render(data) {
-  const km = data.km || 0;
+  const km   = data.km   || 0;
   const goal = data.goal || 42;
   const name = data.name || ('Runner ' + runnerNum);
-  const pct = Math.min(100, (km / goal) * 100);
+  const pct  = Math.min(100, (km / goal) * 100);
 
   document.getElementById('stage').style.display = 'block';
   document.getElementById('noData').style.display = 'none';
 
   document.getElementById('nameText').textContent = formatName(name, runnerNum);
-  document.getElementById('kmNum').textContent = km.toFixed(2);
-  document.getElementById('barFill').style.width = pct.toFixed(2) + '%';
+  document.getElementById('kmNum').textContent    = km.toFixed(2);
+  document.getElementById('barFill').style.width  = pct.toFixed(2) + '%';
 }
 
 if (isDemo) {
