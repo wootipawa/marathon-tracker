@@ -14,9 +14,9 @@
   --c4: #A855F7;
   --green: #10ff49;
   --accent: #00f2ea;
-  --panel-bg: rgba(0, 0, 0, 0.20);
-  --footer-bg: rgba(0, 0, 0, 0.20);
-  --accent-bottom: rgba(0, 0, 0, 0.20);
+  --panel-bg: rgba(0,0,0,0.70);
+  --footer-bg: rgba(0,0,0,0.70);
+  --accent-bottom: transparent;
 }
 
 html, body {
@@ -33,7 +33,7 @@ html, body {
   position: fixed;
   left: 60px;
   bottom: 60px;
-  width: 950px;
+  width: 1000px;
   opacity: 0;
   animation: fadeIn 0.6s 0.1s forwards;
 }
@@ -45,7 +45,7 @@ html, body {
 /* ── CARD ── */
 .card {
   width: 100%;
-  background-color: var(--panel-bg);
+  background-color: rgba(0,0,0,0.70);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   display: flex;
@@ -81,6 +81,7 @@ html, body {
 .name-box {
   color: #ffffff;
   font-size: 42px;
+  font-weight: 700;
   letter-spacing: 5px;
   text-transform: uppercase;
   text-align: center;
@@ -89,7 +90,7 @@ html, body {
 
 /* ── CONTENT ── */
 .content {
-  padding: 50px 0;
+  padding: 7px 0;
   text-align: center;
   color: #ffffff;
 }
@@ -112,14 +113,14 @@ html, body {
 /* ── FOOTER ── */
 .footer {
   width: 100%;
-  background-color: var(--footer-bg);
+  background-color: transparent;
 }
 
 .labels {
   display: flex;
   justify-content: space-around;
   color: #ffffff;
-  font-size: 20px;
+  font-size: 28px;
   padding: 12px 0;
   font-weight: 400;
   font-family: 'Orbitron', sans-serif;
@@ -141,8 +142,8 @@ html, body {
 }
 
 .bottom-accent {
-  height: 12px;
-  background-color: var(--accent-bottom);
+  height: 24px;
+  background-color: transparent;
   width: 100%;
 }
 
