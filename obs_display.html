@@ -3,154 +3,316 @@
 <head>
 <meta charset="UTF-8">
 <title>Marathon OBS Display</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;600;700&family=Sarabun:wght@600;700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #000;
+  --panel: #0a0a0a;
+  --line: rgba(255,255,255,0.08);
+  --text: #fff;
+  --muted: #6b7280;
+  --green: #16a34a;
+  --green-light: #4ade80;
+  --red: #dc2626;
+  --purple: #a855f7;
+  --yellow: #eab308;
+  --cyan: #06b6d4;
+}
+
 body {
   background: transparent;
-  font-family: 'Sarabun', sans-serif;
+  font-family: 'Inter', 'Sarabun', sans-serif;
   padding: 12px;
-  width: 680px;
+  width: 720px;
+  color: var(--text);
 }
-.container {
-  background: rgba(0,0,0,0.82);
-  border-radius: 14px;
-  padding: 14px 18px;
-  border: 1px solid rgba(255,255,255,0.08);
+
+.panel {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
 }
-.header {
+
+/* ── Header bar ── */
+.head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #050505;
+  border-bottom: 1px solid var(--line);
+}
+.head-left {
+  display: flex; align-items: center; gap: 10px;
+}
+.live-dot {
+  width: 8px; height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: blink 1.4s infinite;
+  box-shadow: 0 0 8px var(--red);
+}
+.live-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  color: var(--red);
 }
 .title {
-  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
   font-weight: 800;
-  color: #fff;
   letter-spacing: .12em;
+  color: var(--text);
   text-transform: uppercase;
 }
-.upd {
+.head-right {
+  font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: .06em;
+  color: var(--muted);
+  letter-spacing: .04em;
 }
-.runner-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  animation: slideIn .4s ease;
-}
-.runner-row:last-child { margin-bottom: 0; }
-@keyframes slideIn { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
 
-.rank {
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 800;
-  flex-shrink: 0;
+/* ── Column header (like F1 lap/gap/time) ── */
+.col-head {
+  display: grid;
+  grid-template-columns: 56px 32px 1fr 56px 96px 96px;
+  gap: 10px;
+  padding: 6px 14px;
+  background: #030303;
+  border-bottom: 1px solid var(--line);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--muted);
+  text-transform: uppercase;
 }
+.col-head .right { text-align: right; }
+.col-head .center { text-align: center; }
+
+/* ── Runner row ── */
+.row {
+  display: grid;
+  grid-template-columns: 56px 32px 1fr 56px 96px 96px;
+  gap: 10px;
+  padding: 10px 14px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  transition: background .3s;
+}
+.row:last-child { border-bottom: none; }
+.row.update { background: rgba(74,222,128,0.04); }
+
+/* ── Number tag (F1 style) ── */
+.tag {
+  display: grid;
+  grid-template-columns: 22px 30px;
+  height: 26px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.tag .num {
+  background: #1a1a1a;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.tag .code {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  display: flex; align-items: center; justify-content: center;
+  color: #000;
+}
+/* Team-style colors per runner */
+.tag.t1 .code { background: #f59e0b; color: #000; }   /* amber */
+.tag.t2 .code { background: #06b6d4; color: #000; }   /* cyan */
+.tag.t3 .code { background: #ef4444; color: #fff; }   /* red */
+.tag.t4 .code { background: #22c55e; color: #000; }   /* green */
+
+/* ── Flag ── */
 .flag {
   font-size: 22px;
-  width: 28px;
+  line-height: 1;
   text-align: center;
-  flex-shrink: 0;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
 }
-.name {
-  font-size: 13px;
+
+/* ── Name ── */
+.name-cell {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
   font-weight: 700;
-  color: #fff;
-  width: 92px;
-  flex-shrink: 0;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.bar-wrap {
+
+/* ── Status pill (DRS/PIT style) ── */
+.pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  padding: 3px 0;
+  border-radius: 3px;
+  text-align: center;
+  border: 1px solid;
+}
+.pill.live {
+  border-color: var(--green);
+  color: var(--green-light);
+  background: rgba(22,163,74,0.1);
+}
+.pill.done {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: rgba(168,85,247,0.1);
+}
+.pill.idle {
+  border-color: var(--muted);
+  color: var(--muted);
+  background: transparent;
+}
+
+/* ── Progress bar inline ── */
+.bar-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bar-track {
   flex: 1;
-  height: 22px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 100px;
+  height: 18px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
   overflow: hidden;
   position: relative;
 }
 .bar-fill {
   height: 100%;
-  border-radius: 100px;
-  transition: width 1.2s cubic-bezier(.4,0,.2,1);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 8px;
-  min-width: 0;
+  width: 0%;
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+  position: relative;
 }
-.bar-text {
-  font-size: 11px;
+.bar-pct {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
   font-weight: 700;
-  white-space: nowrap;
+  color: rgba(0,0,0,0.7);
+  letter-spacing: .04em;
 }
-.km-badge {
-  font-size: 12px;
-  font-weight: 700;
-  min-width: 96px;
+
+.t1 .bar-fill { background: #f59e0b; }
+.t2 .bar-fill { background: #06b6d4; }
+.t3 .bar-fill { background: #ef4444; }
+.t4 .bar-fill { background: #22c55e; }
+
+/* ── Distance numbers (right-aligned, mono) ── */
+.dist-cell {
   text-align: right;
-  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
 }
-.dot-live {
-  width: 7px; height: 7px;
-  background: #4ade80;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 5px;
-  animation: blink 1.4s infinite;
+.dist-main {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
 }
+.dist-sub {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+  letter-spacing: .04em;
+}
+.dist-sub .goal-num { color: var(--text); }
+
+.gap-cell {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-light);
+  line-height: 1;
+}
+.gap-cell.behind { color: var(--muted); }
+.gap-sub {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: .04em;
+}
+
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 
-.r1 { background: #f59e0b; color: #3b1f00; }
-.r2 { background: #9ca3af; color: #1a1a1a; }
-.r3 { background: #cd7c45; color: #2a1000; }
-.r4 { background: #34d399; color: #022c1e; }
-
-/* ── DEMO mode (เปิดด้วย ?demo=1) ── */
+/* ── DEMO mode ── */
 body.demo {
   background:
-    radial-gradient(ellipse 60% 40% at 30% 20%, rgba(0,212,255,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 30% at 80% 80%, rgba(255,45,85,0.08) 0%, transparent 60%),
-    #0a0a0f !important;
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 50%),
+    #0a0a0a !important;
   min-height: 100vh;
 }
 body.demo::before {
-  content: 'DEMO MODE';
+  content: 'DEMO';
   position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-  padding: 4px 12px;
-  background: rgba(255,179,0,0.15);
-  border: 1px solid rgba(255,179,0,0.5);
-  border-radius: 4px;
-  color: #ffb300;
-  font-size: 10px; letter-spacing: 2px;
+  padding: 3px 10px;
+  background: rgba(234,179,8,0.15);
+  border: 1px solid rgba(234,179,8,0.5);
+  border-radius: 3px;
+  color: var(--yellow);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .2em;
   font-weight: 700;
   z-index: 1000;
 }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="title"><span class="dot-live"></span><span id="evtTitle">MARATHON LIVE</span></div>
-    <div class="upd" id="upd">—</div>
+
+<div class="panel">
+
+  <!-- Header -->
+  <div class="head">
+    <div class="head-left">
+      <span class="live-dot"></span>
+      <span class="live-text">LIVE</span>
+      <span class="title" id="evtTitle">MARATHON TRACKER</span>
+    </div>
+    <div class="head-right" id="upd">—</div>
   </div>
+
+  <!-- Column headers -->
+  <div class="col-head">
+    <div>POS / CODE</div>
+    <div class="center">FLAG</div>
+    <div>NAME</div>
+    <div class="center">STATUS</div>
+    <div class="right">DISTANCE</div>
+    <div class="right">PROGRESS</div>
+  </div>
+
+  <!-- Rows -->
   <div id="rows"></div>
+
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ===== Firebase =====
 const firebaseConfig = {
   apiKey: "AIzaSyB9RxP_jFuecXLyT7szJMnQYywIeVuqk34",
   authDomain: "marathon-tracker-f7e06.firebaseapp.com",
@@ -162,41 +324,93 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-// =====================
 
-const colors = [
-  { rank: 'r1', fill: '#f59e0b', text: '#3b1f00', km: '#f59e0b' },
-  { rank: 'r2', fill: '#9ca3af', text: '#1a1a1a', km: '#9ca3af' },
-  { rank: 'r3', fill: '#cd7c45', text: '#2a1000', km: '#cd7c45' },
-  { rank: 'r4', fill: '#34d399', text: '#022c1e', km: '#34d399' },
-];
+// 3-letter code from name (Thai or English)
+function makeCode(name, idx) {
+  if (!name) return ['R1','R2','R3','R4'][idx];
+  // Take English chars first, fall back to Thai
+  const en = (name.match(/[A-Za-z]+/g) || []).join('').toUpperCase();
+  if (en.length >= 3) return en.slice(0, 3);
+  if (en.length > 0) return en.padEnd(3, 'X');
+  // Thai fallback
+  const th = name.replace(/\s/g, '').slice(0, 3);
+  return th || ['R1','R2','R3','R4'][idx];
+}
+
+let prevKm = [0, 0, 0, 0];
 
 function render(data) {
   const rows = document.getElementById('rows');
   let html = '';
+
+  // Sort by km desc to compute gap
+  const arr = [];
   for (let i = 0; i < 4; i++) {
-    const r = data['runner' + (i + 1)] || { name: 'นักวิ่ง ' + (i + 1), km: 0 };
-    const goal = r.goal || 42;
-    const flag = r.flag || '🏁';
-    const km = r.km || 0;
-    const pct = Math.min(100, (km / goal) * 100);
-    const c = colors[i];
-    const showInBar = pct > 16;
-    html += `
-      <div class="runner-row">
-        <div class="rank ${c.rank}">${i + 1}</div>
-        <div class="flag">${flag}</div>
-        <div class="name">${r.name || 'นักวิ่ง ' + (i + 1)}</div>
-        <div class="bar-wrap">
-          <div class="bar-fill" style="width:${pct.toFixed(1)}%;background:${c.fill}">
-            ${showInBar ? `<span class="bar-text" style="color:${c.text}">${km.toFixed(1)} กม.</span>` : ''}
-          </div>
-        </div>
-        <div class="km-badge" style="color:${c.km}">${km.toFixed(1)} / ${goal} กม.</div>
-      </div>`;
+    const r = data['runner' + (i + 1)] || {};
+    arr.push({
+      idx: i,
+      name: r.name || 'นักวิ่ง ' + (i + 1),
+      flag: r.flag || '🏁',
+      goal: r.goal || 42,
+      km: r.km || 0,
+      acc: r.acc
+    });
   }
+  // Use original order (1-4) but compute leader for gap
+  const leaderKm = Math.max(...arr.map(a => a.km));
+
+  arr.forEach((r, i) => {
+    const pct = Math.min(100, (r.km / r.goal) * 100);
+    const code = makeCode(r.name, i);
+    const team = `t${i + 1}`;
+
+    const kmChanged = Math.abs(r.km - prevKm[i]) > 0.005;
+    const updateClass = kmChanged ? 'update' : '';
+
+    const status = r.km >= r.goal ? 'done' : (r.km > 0 ? 'live' : 'idle');
+    const statusText = status === 'done' ? 'FINISH' : (status === 'live' ? 'LIVE' : 'WAIT');
+
+    const gap = leaderKm - r.km;
+    const gapText = gap < 0.01 ? 'LEADER' : '-' + gap.toFixed(2);
+    const gapClass = gap < 0.01 ? '' : 'behind';
+
+    html += `
+      <div class="row ${updateClass}">
+        <div class="tag ${team}">
+          <div class="num">${i + 1}</div>
+          <div class="code">${code}</div>
+        </div>
+        <div class="flag">${r.flag}</div>
+        <div class="name-cell">${r.name}</div>
+        <div class="pill ${status}">${statusText}</div>
+        <div class="dist-cell ${team}">
+          <div class="dist-main">${r.km.toFixed(2)}</div>
+          <div class="dist-sub">/ <span class="goal-num">${r.goal}</span> KM</div>
+        </div>
+        <div class="dist-cell">
+          <div class="bar-cell">
+            <div class="bar-track">
+              <div class="bar-fill ${team}" style="width:${pct.toFixed(1)}%"></div>
+            </div>
+          </div>
+          <div class="gap-sub">${pct.toFixed(0)}% · ${gapText}</div>
+        </div>
+      </div>`;
+
+    prevKm[i] = r.km;
+  });
+
   rows.innerHTML = html;
-  document.getElementById('upd').textContent = 'อัปเดต ' + new Date().toLocaleTimeString('th-TH');
+
+  // Apply team class to bar fills
+  document.querySelectorAll('.row').forEach((row, i) => {
+    const team = `t${i + 1}`;
+    const fill = row.querySelector('.bar-fill');
+    if (fill) fill.className = `bar-fill ${team}`;
+    row.classList.add(team);
+  });
+
+  document.getElementById('upd').textContent = new Date().toLocaleTimeString('th-TH', { hour12: false });
 }
 
 // ── Demo mode ──
@@ -218,9 +432,7 @@ function runDemo() {
   render(demo);
   setInterval(() => {
     Object.values(demo).forEach(r => {
-      if (r.km < r.goal) {
-        r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
-      }
+      if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
     });
     render(demo);
   }, 2000);
