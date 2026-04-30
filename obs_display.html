@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Marathon OBS — Single Runner</title>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Sarabun:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Sarabun:wght@600;700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,7 +14,7 @@
   --c4: #A855F7;   /* Purple */
   --green: #00ff66;
 
-  --panel-bg: rgba(70, 70, 70, 0.55);
+  --panel-bg: rgba(75, 75, 75, 0.85);
   --text: #ffffff;
 }
 
@@ -23,16 +23,16 @@ html, body {
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-  font-family: 'Sarabun', sans-serif;
+  font-family: 'Russo One', 'Sarabun', sans-serif;
   color: var(--text);
 }
 
-/* ── Container ── */
+/* ── Container — bottom-left ── */
 .stage {
   position: fixed;
   left: 60px;
   bottom: 60px;
-  width: min(900px, calc(100vw - 120px));
+  width: min(960px, calc(100vw - 120px));
   opacity: 0;
   animation: fadeIn 0.6s 0.1s forwards;
 }
@@ -41,11 +41,12 @@ html, body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── TOP ROW ── */
+/* ── TOP ROW: Number tag (square) + Name ── */
 .top-row {
   display: grid;
-  grid-template-columns: 130px 1fr;
-  height: 100px;
+  grid-template-columns: 120px 1fr;
+  height: 120px;
+  position: relative;
 }
 
 .num-tag {
@@ -53,29 +54,35 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Oswald', sans-serif;
-  font-size: 78px;
-  font-weight: 700;
+  font-family: 'Russo One', sans-serif;
+  font-size: 80px;
   color: #ffffff;
   line-height: 1;
-  letter-spacing: -0.02em;
 }
 
 .name-box {
   background: var(--panel-bg);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 30px;
-  border-bottom: 4px solid var(--accent);
+  position: relative;
 }
+
+/* Accent color stripe BELOW the name row */
+.accent-stripe {
+  position: absolute;
+  left: 120px;
+  right: 0;
+  bottom: 0;
+  height: 7px;
+  background: var(--accent);
+}
+
 .name-text {
-  font-family: 'Oswald', sans-serif;
-  font-weight: 700;
-  font-size: clamp(38px, 5vw, 58px);
-  letter-spacing: 0.02em;
+  font-family: 'Russo One', sans-serif;
+  font-size: clamp(42px, 5.5vw, 64px);
+  letter-spacing: 0.04em;
   color: var(--text);
   text-transform: uppercase;
   white-space: nowrap;
@@ -83,66 +90,62 @@ html, body {
   text-overflow: ellipsis;
   width: 100%;
   text-align: center;
+  line-height: 1;
 }
 
 /* ── BOTTOM BOX ── */
 .bottom-box {
   background: var(--panel-bg);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  padding: 28px 0 0 0;
+  padding: 36px 0 18px 0;
   position: relative;
+  margin-top: 7px;
 }
 
 .km-display {
   text-align: center;
-  font-family: 'Oswald', sans-serif;
-  font-weight: 700;
+  font-family: 'Russo One', sans-serif;
   line-height: 1;
-  margin-bottom: 24px;
+  margin-bottom: 38px;
   padding: 0 40px;
 }
 .km-num {
-  font-size: clamp(80px, 11vw, 130px);
-  letter-spacing: -0.04em;
+  font-size: clamp(85px, 11.5vw, 138px);
+  letter-spacing: 0.01em;
   color: var(--text);
 }
 .km-unit {
   font-size: clamp(28px, 3.5vw, 42px);
-  font-weight: 600;
   color: var(--text);
-  margin-left: 6px;
-  letter-spacing: 0.02em;
+  margin-left: 8px;
+  letter-spacing: 0.04em;
 }
 
-/* ── Scale ticks (10K, 20K, 30K — evenly spaced full width) ── */
+/* ── Scale ticks ── */
 .scale-row {
   position: relative;
-  height: 32px;
-  margin-bottom: 6px;
-  /* No padding — full width, ticks position based on box edges */
+  height: 36px;
+  margin-bottom: 14px;  /* gap between scale and bar */
 }
 .scale-tick {
   position: absolute;
   top: 0;
   transform: translateX(-50%);
-  font-family: 'Oswald', sans-serif;
-  font-weight: 600;
-  font-size: 24px;
+  font-family: 'Russo One', sans-serif;
+  font-size: 28px;
   color: #ffffff;
   letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
-/* ── Progress bar — raised above bottom edge, full width ── */
+/* ── Progress bar — raised so gray edge shows below ── */
 .bar-wrap {
   position: relative;
   width: 100%;
-  /* Raises the bar so it appears to "float" over the bottom of the panel */
-  margin-bottom: -4px;
+  /* slight bottom margin so the panel's gray bottom edge is visible UNDER the bar */
+  margin-bottom: 6px;
 }
 .bar-track {
-  height: 12px;
+  height: 16px;
   background: #ffffff;
   position: relative;
   overflow: hidden;
@@ -153,7 +156,7 @@ html, body {
   background: var(--green);
   width: 0%;
   transition: width 1.2s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 0 16px rgba(0,255,102,0.6);
+  box-shadow: 0 0 16px rgba(0,255,102,0.5);
 }
 
 /* No-data state */
@@ -163,20 +166,19 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Oswald', sans-serif;
+  font-family: 'Russo One', sans-serif;
   font-size: 32px;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.3);
 }
 body.demo .no-data { display: none; }
 
-/* Demo mode hint */
 body.demo {
   background:
     radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%) !important;
 }
 body.demo::before {
-  content: 'DEMO · ?runner=1 to switch';
+  content: 'DEMO';
   position: fixed;
   top: 16px; left: 50%;
   transform: translateX(-50%);
@@ -185,10 +187,9 @@ body.demo::before {
   border: 1px solid rgba(234,179,8,0.6);
   border-radius: 3px;
   color: #FCD34D;
-  font-family: 'Oswald', sans-serif;
-  font-size: 11px;
+  font-family: 'Russo One', sans-serif;
+  font-size: 12px;
   letter-spacing: 0.18em;
-  font-weight: 600;
   z-index: 1000;
 }
 </style>
@@ -202,6 +203,7 @@ body.demo::before {
     <div class="name-box">
       <div class="name-text" id="nameText">RUNNER</div>
     </div>
+    <div class="accent-stripe"></div>
   </div>
 
   <div class="bottom-box">
@@ -257,16 +259,15 @@ function formatName(name, idx) {
   return name.toUpperCase();
 }
 
-// Scale ticks: ALWAYS evenly spaced at 25%, 50%, 75% (visual reference points)
+// Scale ticks always at 25/50/75% — visual reference only
 function renderScale() {
   const row = document.getElementById('scaleRow');
   row.innerHTML = '';
-  const ticks = [
+  [
     { label: '10K', pos: 25 },
     { label: '20K', pos: 50 },
     { label: '30K', pos: 75 }
-  ];
-  ticks.forEach(t => {
+  ].forEach(t => {
     const el = document.createElement('div');
     el.className = 'scale-tick';
     el.textContent = t.label;
@@ -289,16 +290,15 @@ function render(data) {
   document.getElementById('barFill').style.width = pct.toFixed(2) + '%';
 }
 
-// Render scale once at load (always 10K/20K/30K evenly spaced)
 renderScale();
 
 if (isDemo) {
   document.body.classList.add('demo');
   const demoData = [
-    { name: 'Ronaldo', goal: 42, km: 10, _speed: 0.18 },
-    { name: 'John Smith', goal: 21, km: 5.4, _speed: 0.32 },
-    { name: 'Yuki Tanaka', goal: 10, km: 3.2, _speed: 0.45 },
-    { name: 'M.Tengnon', goal: 42, km: 12.67, _speed: 0.55 },
+    { name: 'Ronaldo',     goal: 42, km: 10.00, _speed: 0.18 },
+    { name: 'John Smith',  goal: 21, km: 5.4,   _speed: 0.32 },
+    { name: 'Yuki Tanaka', goal: 10, km: 3.2,   _speed: 0.45 },
+    { name: 'M.Tengnon',   goal: 42, km: 12.67, _speed: 0.55 },
   ];
   const r = demoData[runnerNum - 1];
   render(r);
