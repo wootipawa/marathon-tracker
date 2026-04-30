@@ -2,312 +2,215 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Marathon OBS Display</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;600;700&family=Sarabun:wght@600;700&display=swap" rel="stylesheet">
+<title>Marathon OBS — Single Runner</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Sarabun:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #000;
-  --panel: #0a0a0a;
-  --line: rgba(255,255,255,0.08);
-  --text: #fff;
-  --muted: #6b7280;
-  --green: #16a34a;
-  --green-light: #4ade80;
-  --red: #dc2626;
-  --purple: #a855f7;
-  --yellow: #eab308;
-  --cyan: #06b6d4;
+  /* 4 base colors */
+  --c1: #FACC15;   /* Yellow */
+  --c2: #EC4899;   /* Pink */
+  --c3: #22D3EE;   /* Cyan */
+  --c4: #A855F7;   /* Purple */
+
+  --panel-bg: rgba(70, 70, 70, 0.55);
+  --panel-bg-strong: rgba(50, 50, 50, 0.65);
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.65);
+  --track-bg: rgba(255, 255, 255, 0.85);
 }
 
-body {
-  background: transparent;
-  font-family: 'Inter', 'Sarabun', sans-serif;
-  padding: 12px;
-  width: 720px;
+html, body {
+  background: transparent !important;
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: 'Sarabun', sans-serif;
   color: var(--text);
 }
 
-.panel {
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  overflow: hidden;
+/* ── Container ── */
+.stage {
+  position: fixed;
+  left: 60px;
+  bottom: 60px;
+  width: min(900px, calc(100vw - 120px));
+  opacity: 0;
+  animation: fadeIn 0.6s 0.1s forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Header bar ── */
-.head {
+/* ── TOP ROW: Number tag + Name ── */
+.top-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  height: 100px;
+}
+
+.num-tag {
+  background: var(--accent);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 14px;
-  background: #050505;
-  border-bottom: 1px solid var(--line);
-}
-.head-left {
-  display: flex; align-items: center; gap: 10px;
-}
-.live-dot {
-  width: 8px; height: 8px;
-  background: var(--red);
-  border-radius: 50%;
-  animation: blink 1.4s infinite;
-  box-shadow: 0 0 8px var(--red);
-}
-.live-text {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 78px;
   font-weight: 700;
-  letter-spacing: .15em;
-  color: var(--red);
-}
-.title {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .12em;
-  color: var(--text);
-  text-transform: uppercase;
-}
-.head-right {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: .04em;
-}
-
-/* ── Column header (like F1 lap/gap/time) ── */
-.col-head {
-  display: grid;
-  grid-template-columns: 56px 32px 1fr 56px 96px 96px;
-  gap: 10px;
-  padding: 6px 14px;
-  background: #030303;
-  border-bottom: 1px solid var(--line);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-.col-head .right { text-align: right; }
-.col-head .center { text-align: center; }
-
-/* ── Runner row ── */
-.row {
-  display: grid;
-  grid-template-columns: 56px 32px 1fr 56px 96px 96px;
-  gap: 10px;
-  padding: 10px 14px;
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-  transition: background .3s;
-}
-.row:last-child { border-bottom: none; }
-.row.update { background: rgba(74,222,128,0.04); }
-
-/* ── Number tag (F1 style) ── */
-.tag {
-  display: grid;
-  grid-template-columns: 22px 30px;
-  height: 26px;
-  border-radius: 3px;
-  overflow: hidden;
-}
-.tag .num {
-  background: #1a1a1a;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-}
-.tag .code {
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .04em;
-  display: flex; align-items: center; justify-content: center;
-  color: #000;
-}
-/* Team-style colors per runner */
-.tag.t1 .code { background: #f59e0b; color: #000; }   /* amber */
-.tag.t2 .code { background: #06b6d4; color: #000; }   /* cyan */
-.tag.t3 .code { background: #ef4444; color: #fff; }   /* red */
-.tag.t4 .code { background: #22c55e; color: #000; }   /* green */
-
-/* ── Flag ── */
-.flag {
-  font-size: 22px;
+  color: #0a0a0a;
   line-height: 1;
-  text-align: center;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+  letter-spacing: -0.02em;
 }
 
-/* ── Name ── */
-.name-cell {
-  font-family: 'Sarabun', sans-serif;
-  font-size: 14px;
+.name-box {
+  background: var(--panel-bg);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 30px;
+  border-bottom: 4px solid var(--accent);
+}
+.name-text {
+  font-family: 'Oswald', sans-serif;
   font-weight: 700;
+  font-size: clamp(38px, 5vw, 58px);
+  letter-spacing: 0.02em;
   color: var(--text);
+  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-/* ── Status pill (DRS/PIT style) ── */
-.pill {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  padding: 3px 0;
-  border-radius: 3px;
+  width: 100%;
   text-align: center;
-  border: 1px solid;
-}
-.pill.live {
-  border-color: var(--green);
-  color: var(--green-light);
-  background: rgba(22,163,74,0.1);
-}
-.pill.done {
-  border-color: var(--purple);
-  color: var(--purple);
-  background: rgba(168,85,247,0.1);
-}
-.pill.idle {
-  border-color: var(--muted);
-  color: var(--muted);
-  background: transparent;
 }
 
-/* ── Progress bar inline ── */
-.bar-cell {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.bar-track {
-  flex: 1;
-  height: 18px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 2px;
-  overflow: hidden;
+/* ── BOTTOM ROW: Distance + scale + progress ── */
+.bottom-box {
+  background: var(--panel-bg);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  padding: 24px 40px 0 40px;
   position: relative;
+}
+
+.km-display {
+  text-align: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 30px;
+}
+.km-num {
+  font-size: clamp(80px, 11vw, 130px);
+  letter-spacing: -0.04em;
+  color: var(--text);
+}
+.km-unit {
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 600;
+  color: var(--text);
+  margin-left: 6px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Scale ticks ── */
+.scale-row {
+  position: relative;
+  height: 28px;
+  margin-bottom: 8px;
+}
+.scale-tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+/* ── Progress bar ── */
+.bar-track {
+  height: 8px;
+  background: var(--track-bg);
+  position: relative;
+  overflow: hidden;
 }
 .bar-fill {
   height: 100%;
+  background: var(--accent);
   width: 0%;
-  transition: width 1s cubic-bezier(.4,0,.2,1);
-  position: relative;
-}
-.bar-pct {
-  position: absolute;
-  top: 50%;
-  right: 6px;
-  transform: translateY(-50%);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  font-weight: 700;
-  color: rgba(0,0,0,0.7);
-  letter-spacing: .04em;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
 }
 
-.t1 .bar-fill { background: #f59e0b; }
-.t2 .bar-fill { background: #06b6d4; }
-.t3 .bar-fill { background: #ef4444; }
-.t4 .bar-fill { background: #22c55e; }
-
-/* ── Distance numbers (right-aligned, mono) ── */
-.dist-cell {
-  text-align: right;
-  font-family: 'JetBrains Mono', monospace;
-}
-.dist-main {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-.dist-sub {
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 3px;
-  letter-spacing: .04em;
-}
-.dist-sub .goal-num { color: var(--text); }
-
-.gap-cell {
-  text-align: right;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--green-light);
-  line-height: 1;
-}
-.gap-cell.behind { color: var(--muted); }
-.gap-sub {
-  font-size: 9px;
-  color: var(--muted);
-  margin-top: 4px;
-  letter-spacing: .04em;
-}
-
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-
-/* ── DEMO mode ── */
-body.demo {
-  background:
-    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 50%),
-    #0a0a0a !important;
-  min-height: 100vh;
-}
+/* ── Demo mode hint ── */
 body.demo::before {
-  content: 'DEMO';
-  position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-  padding: 3px 10px;
-  background: rgba(234,179,8,0.15);
-  border: 1px solid rgba(234,179,8,0.5);
+  content: 'DEMO · ?runner=1 to switch';
+  position: fixed;
+  top: 16px; left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  background: rgba(234,179,8,0.2);
+  border: 1px solid rgba(234,179,8,0.6);
   border-radius: 3px;
-  color: var(--yellow);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px; letter-spacing: .2em;
-  font-weight: 700;
+  color: #FCD34D;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  font-weight: 600;
   z-index: 1000;
 }
+body.demo {
+  background:
+    radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%) !important;
+}
+
+/* No-data state */
+.no-data {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
+}
+body.demo .no-data { display: none; }
 </style>
 </head>
 <body>
 
-<div class="panel">
+<div class="stage" id="stage" style="display: none;">
 
-  <!-- Header -->
-  <div class="head">
-    <div class="head-left">
-      <span class="live-dot"></span>
-      <span class="live-text">LIVE</span>
-      <span class="title" id="evtTitle">MARATHON TRACKER</span>
+  <!-- Top: number tag + name -->
+  <div class="top-row">
+    <div class="num-tag" id="numTag">1</div>
+    <div class="name-box">
+      <div class="name-text" id="nameText">RUNNER</div>
     </div>
-    <div class="head-right" id="upd">—</div>
   </div>
 
-  <!-- Column headers -->
-  <div class="col-head">
-    <div>POS / CODE</div>
-    <div class="center">FLAG</div>
-    <div>NAME</div>
-    <div class="center">STATUS</div>
-    <div class="right">DISTANCE</div>
-    <div class="right">PROGRESS</div>
-  </div>
+  <!-- Bottom: KM + scale + bar -->
+  <div class="bottom-box">
+    <div class="km-display">
+      <span class="km-num" id="kmNum">0.00</span><span class="km-unit">KM</span>
+    </div>
 
-  <!-- Rows -->
-  <div id="rows"></div>
+    <div class="scale-row" id="scaleRow"></div>
+    <div class="bar-track">
+      <div class="bar-fill" id="barFill"></div>
+    </div>
+  </div>
 
 </div>
+
+<div class="no-data" id="noData">WAITING FOR DATA…</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -325,117 +228,86 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 3-letter code from name (Thai or English)
-function makeCode(name, idx) {
-  if (!name) return ['R1','R2','R3','R4'][idx];
-  // Take English chars first, fall back to Thai
-  const en = (name.match(/[A-Za-z]+/g) || []).join('').toUpperCase();
-  if (en.length >= 3) return en.slice(0, 3);
-  if (en.length > 0) return en.padEnd(3, 'X');
-  // Thai fallback
-  const th = name.replace(/\s/g, '').slice(0, 3);
-  return th || ['R1','R2','R3','R4'][idx];
+// ── Read ?runner=N from URL (default 1) ──
+const params = new URLSearchParams(window.location.search);
+const runnerNum = Math.min(4, Math.max(1, parseInt(params.get('runner') || '1')));
+const isDemo = params.get('demo') === '1';
+
+const COLORS = ['#FACC15', '#EC4899', '#22D3EE', '#A855F7'];
+const accent = COLORS[runnerNum - 1];
+
+// Apply accent color
+document.documentElement.style.setProperty('--accent', accent);
+
+// Set number tag
+document.getElementById('numTag').textContent = runnerNum;
+
+// ── Make code from name (used as fallback) ──
+function formatName(name, idx) {
+  if (!name) return 'RUNNER ' + idx;
+  // If has space and English: "John Smith" → "J. SMITH"
+  const en = name.match(/[A-Za-z]+/g);
+  if (en && en.length >= 2) {
+    return (en[0][0] + '.' + en[en.length - 1]).toUpperCase();
+  }
+  // Single English word or Thai → uppercase as-is
+  return name.toUpperCase();
 }
 
-let prevKm = [0, 0, 0, 0];
-
-function render(data) {
-  const rows = document.getElementById('rows');
-  let html = '';
-
-  // Sort by km desc to compute gap
-  const arr = [];
-  for (let i = 0; i < 4; i++) {
-    const r = data['runner' + (i + 1)] || {};
-    arr.push({
-      idx: i,
-      name: r.name || 'นักวิ่ง ' + (i + 1),
-      flag: r.flag || '🏁',
-      goal: r.goal || 42,
-      km: r.km || 0,
-      acc: r.acc
-    });
+// ── Render scale ticks based on goal ──
+function renderScale(goal) {
+  const row = document.getElementById('scaleRow');
+  row.innerHTML = '';
+  // Determine step (5km if goal<=15, 10km otherwise)
+  const step = goal <= 15 ? 5 : (goal <= 50 ? 10 : 20);
+  // Show ticks at step, 2*step, 3*step ... but not at goal itself or 0
+  for (let k = step; k < goal; k += step) {
+    const tick = document.createElement('div');
+    tick.className = 'scale-tick';
+    tick.textContent = k + 'K';
+    tick.style.left = ((k / goal) * 100) + '%';
+    row.appendChild(tick);
   }
-  // Use original order (1-4) but compute leader for gap
-  const leaderKm = Math.max(...arr.map(a => a.km));
+}
 
-  arr.forEach((r, i) => {
-    const pct = Math.min(100, (r.km / r.goal) * 100);
-    const code = makeCode(r.name, i);
-    const team = `t${i + 1}`;
+// ── Render runner data ──
+function render(data) {
+  const km = data.km || 0;
+  const goal = data.goal || 42;
+  const name = data.name || ('Runner ' + runnerNum);
+  const pct = Math.min(100, (km / goal) * 100);
 
-    const kmChanged = Math.abs(r.km - prevKm[i]) > 0.005;
-    const updateClass = kmChanged ? 'update' : '';
+  document.getElementById('stage').style.display = 'block';
+  document.getElementById('noData').style.display = 'none';
 
-    const status = r.km >= r.goal ? 'done' : (r.km > 0 ? 'live' : 'idle');
-    const statusText = status === 'done' ? 'FINISH' : (status === 'live' ? 'LIVE' : 'WAIT');
-
-    const gap = leaderKm - r.km;
-    const gapText = gap < 0.01 ? 'LEADER' : '-' + gap.toFixed(2);
-    const gapClass = gap < 0.01 ? '' : 'behind';
-
-    html += `
-      <div class="row ${updateClass}">
-        <div class="tag ${team}">
-          <div class="num">${i + 1}</div>
-          <div class="code">${code}</div>
-        </div>
-        <div class="flag">${r.flag}</div>
-        <div class="name-cell">${r.name}</div>
-        <div class="pill ${status}">${statusText}</div>
-        <div class="dist-cell ${team}">
-          <div class="dist-main">${r.km.toFixed(2)}</div>
-          <div class="dist-sub">/ <span class="goal-num">${r.goal}</span> KM</div>
-        </div>
-        <div class="dist-cell">
-          <div class="bar-cell">
-            <div class="bar-track">
-              <div class="bar-fill ${team}" style="width:${pct.toFixed(1)}%"></div>
-            </div>
-          </div>
-          <div class="gap-sub">${pct.toFixed(0)}% · ${gapText}</div>
-        </div>
-      </div>`;
-
-    prevKm[i] = r.km;
-  });
-
-  rows.innerHTML = html;
-
-  // Apply team class to bar fills
-  document.querySelectorAll('.row').forEach((row, i) => {
-    const team = `t${i + 1}`;
-    const fill = row.querySelector('.bar-fill');
-    if (fill) fill.className = `bar-fill ${team}`;
-    row.classList.add(team);
-  });
-
-  document.getElementById('upd').textContent = new Date().toLocaleTimeString('th-TH', { hour12: false });
+  document.getElementById('nameText').textContent = formatName(name, runnerNum);
+  document.getElementById('kmNum').textContent = km.toFixed(2);
+  document.getElementById('barFill').style.width = pct.toFixed(2) + '%';
+  renderScale(goal);
 }
 
 // ── Demo mode ──
-const params = new URLSearchParams(window.location.search);
-if (params.get('demo') === '1') {
+if (isDemo) {
   document.body.classList.add('demo');
-  runDemo();
-} else {
-  onValue(ref(db, 'runners'), snap => render(snap.val() || {}));
-}
-
-function runDemo() {
-  const demo = {
-    runner1: { name: 'สมชาย ใจดี', flag: '🇹🇭', goal: 42, km: 0, _speed: 0.18 },
-    runner2: { name: 'John Smith', flag: '🇺🇸', goal: 21, km: 0, _speed: 0.32 },
-    runner3: { name: 'Yuki Tanaka', flag: '🇯🇵', goal: 10, km: 0, _speed: 0.45 },
-    runner4: { name: 'Maria Garcia', flag: '🇪🇸', goal: 5, km: 0, _speed: 0.55 },
-  };
-  render(demo);
+  const demoData = [
+    { name: 'สมชาย ใจดี', goal: 42, km: 12.67, _speed: 0.18 },
+    { name: 'John Smith', goal: 21, km: 5.4, _speed: 0.32 },
+    { name: 'Yuki Tanaka', goal: 10, km: 3.2, _speed: 0.45 },
+    { name: 'M.Tengnon', goal: 42, km: 12.67, _speed: 0.55 },
+  ];
+  const r = demoData[runnerNum - 1];
+  render(r);
   setInterval(() => {
-    Object.values(demo).forEach(r => {
-      if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
-    });
-    render(demo);
+    if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
+    render(r);
   }, 2000);
+} else {
+  // Live mode
+  const key = 'runner' + runnerNum;
+  onValue(ref(db, 'runners/' + key), snap => {
+    const data = snap.val();
+    if (data) render(data);
+  });
 }
 </script>
 </body>
