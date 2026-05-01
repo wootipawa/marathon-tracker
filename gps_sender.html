@@ -197,16 +197,6 @@ select option { background: #111; }
   </div>
 
   <div class="field">
-    <label>ชื่อนักวิ่งที่ตาม</label>
-    <input type="text" id="runnerName" placeholder="ชื่อนักวิ่ง">
-  </div>
-
-  <div class="field">
-    <label>ระยะทางเป้าหมาย (กม.)</label>
-    <input type="number" id="goalKm" placeholder="42" value="42" min="1" max="200" step="1">
-  </div>
-
-  <div class="field">
     <label>จุดเริ่มต้น (lat, lng)</label>
     <input type="text" id="startCoord" placeholder="เช่น 13.7563, 100.5018">
   </div>
@@ -270,14 +260,10 @@ function haversine(la1, lo1, la2, lo2) {
 }
 
 window.startTracking = async function() {
-  const key  = document.getElementById('runnerSel').value;
-  const name = document.getElementById('runnerName').value.trim() || ('ช่างภาพ ' + key.slice(-1));
-  const goal = parseFloat(document.getElementById('goalKm').value) || 42;
+  const key = document.getElementById('runnerSel').value;
   const coordRaw = document.getElementById('startCoord').value.trim();
   const err = document.getElementById('errMsg');
   err.style.display = 'none';
-
-  currentGoal = goal;
 
   if (coordRaw) {
     const parts = coordRaw.split(',');
@@ -292,8 +278,12 @@ window.startTracking = async function() {
     err.style.display = 'block'; return;
   }
 
-  await set(ref(db, 'runners/'+key+'/name'), name);
-  await set(ref(db, 'runners/'+key+'/goal'), goal);
+  // Read name + goal from Firebase (set by admin)
+  const snap = await get(ref(db, 'runners/'+key));
+  const existing = snap.val() || {};
+  const name = existing.name || ('นักวิ่ง ' + key.slice(-1));
+  currentGoal = existing.goal || 42;
+
   await set(ref(db, 'runners/'+key+'/km'), 0);
 
   document.getElementById('btnStart').style.display = 'none';
