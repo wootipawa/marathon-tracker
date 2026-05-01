@@ -359,11 +359,15 @@ window.initRunners = async function() {
   }
   addLog('[Init] สร้างข้อมูลนักวิ่ง 4 คนเรียบร้อย');
 };
+
+window.setName = function(key) {
   const val = document.getElementById('nameInp_'+key).value.trim();
   if (!val) { alert('ใส่ชื่อนักวิ่งด้วยครับ'); return; }
   set(ref(db, 'runners/'+key+'/name'), val);
   addLog(`[Name] runner${key.slice(-1)} → ${val}`);
 };
+
+window.setColor = function(key, color) {
   set(ref(db, 'runners/'+key+'/color'), color);
   const name = (window._cur[key] || {}).name || key;
   addLog(`[Color] ${name} → ${color}`);
