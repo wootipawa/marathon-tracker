@@ -4,64 +4,210 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin — Marathon Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
   font-family: 'Sarabun', sans-serif;
-  background: #0a0f1e;
+  background: #080808;
   color: #fff;
   padding: 24px 20px;
   min-height: 100vh;
 }
-.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
-h1 { font-size: 20px; font-weight: 800; }
-.live-badge { background: #14532d; color: #4ade80; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 100px; letter-spacing: .06em; }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; display: inline-block; margin-right: 5px; animation: bl 1.4s infinite; }
+
+/* ── TOP BAR ── */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 18px;
+}
+.top-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.top-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 4px;
+  letter-spacing: 0.08em;
+}
+.live-badge {
+  background: transparent;
+  border: 1px solid #4ade80;
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 14px;
+  letter-spacing: .1em;
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dot {
+  width: 6px; height: 6px;
+  background: #4ade80;
+  display: inline-block;
+  animation: bl 1.4s infinite;
+}
 @keyframes bl { 0%,100%{opacity:1} 50%{opacity:.2} }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 24px; }
+
+/* ── GRID ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+/* ── RUNNER CARD ── */
 .runner-card {
-  background: #131929;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 18px;
+  background: #111111;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 3px solid var(--card-color, #4ade80);
+  padding: 16px;
   position: relative;
-  overflow: hidden;
 }
 
-/* Color stripe at top of card based on chosen color */
-.runner-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: var(--card-color, #4ade80);
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
 }
-
-.card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .rank-badge {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 800; flex-shrink: 0;
+  font-size: 18px; font-weight: 800;
+  font-family: 'Orbitron', sans-serif;
   background: var(--card-color, #4ade80);
   color: #000;
+  flex-shrink: 0;
 }
-.runner-name { font-size: 15px; font-weight: 700; }
-.runner-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
-.bar-wrap { height: 12px; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; margin-bottom: 8px; }
+.runner-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.runner-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+}
+
+/* ── PROGRESS ── */
+.bar-wrap {
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
 .bar-fill {
   height: 100%;
-  border-radius: 100px;
   transition: width 1s ease;
   background: var(--card-color, #4ade80);
 }
-.km-row { display: flex; justify-content: space-between; font-size: 13px; }
-.km-main { font-weight: 700; }
-.km-of { color: rgba(255,255,255,0.35); }
+.km-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.km-main {
+  font-weight: 800;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+}
+.km-of { color: rgba(255,255,255,0.3); font-size: 12px; }
 
-.controls { margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; display: grid; gap: 12px; }
-.ctrl-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; display: block; margin-bottom: 6px; }
+/* ── CONTROLS ── */
+.controls {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+.ctrl-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 6px;
+}
+.ctrl-row { display: flex; gap: 8px; }
+.ctrl-row input {
+  flex: 1; padding: 8px 10px;
+  background: #080808;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Sarabun', sans-serif;
+  outline: none;
+}
+.ctrl-row input:focus { border-color: var(--card-color, #4ade80); }
+.btn-set {
+  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Orbitron', sans-serif;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-set:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.3); }
+.btn-set:active { background: rgba(255,255,255,0.12); }
+.btn-set.alt { border-color: var(--card-color,#4ade80); color: var(--card-color,#4ade80); }
+.btn-set.alt:hover { background: rgba(255,255,255,0.05); }
 
-/* Color palette */
+/* ── COLOR TOGGLE ── */
+.color-toggle-btn {
+  width: 100%;
+  padding: 7px 12px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: border-color 0.15s;
+}
+.color-toggle-btn:hover { border-color: var(--card-color,#4ade80); color: #fff; }
+.color-toggle-btn .swatch-preview {
+  width: 12px; height: 12px;
+  background: var(--card-color, #4ade80);
+  display: inline-block;
+  flex-shrink: 0;
+}
+.color-panel {
+  display: none;
+  padding: 10px;
+  background: #080808;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: none;
+}
+.color-panel.open { display: block; }
 .color-palette {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -69,17 +215,13 @@ h1 { font-size: 20px; font-weight: 800; }
 }
 .color-swatch {
   aspect-ratio: 1;
-  border-radius: 6px;
   cursor: pointer;
   border: 2px solid transparent;
   transition: all 0.15s;
   position: relative;
 }
 .color-swatch:hover { transform: scale(1.1); }
-.color-swatch.active {
-  border-color: #fff;
-  box-shadow: 0 0 0 2px var(--swatch-color);
-}
+.color-swatch.active { border-color: #fff; }
 .color-swatch.active::after {
   content: '✓';
   position: absolute;
@@ -89,44 +231,46 @@ h1 { font-size: 20px; font-weight: 800; }
   justify-content: center;
   color: #000;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.ctrl-row { display: flex; gap: 8px; }
-.ctrl-row input {
-  flex: 1; padding: 8px 10px;
-  background: #0a0f1e; border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 8px; color: #fff; font-size: 14px;
-  font-family: 'Sarabun', sans-serif; outline: none;
+/* ── LOG ── */
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 10px;
 }
-.ctrl-row input:focus { border-color: #60a5fa; }
-.btn-set {
-  padding: 8px 14px; border-radius: 8px; border: none;
-  background: #1d4ed8; color: #fff; font-size: 13px;
-  font-weight: 700; font-family: 'Sarabun', sans-serif; cursor: pointer;
-  white-space: nowrap;
-}
-.btn-set:active { background: #1e40af; }
-.btn-set.alt { background: #15803d; }
-.btn-set.alt:active { background: #166534; }
-
-.section-title { font-size: 12px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; font-weight: 600; }
 .log-box {
-  background: #131929; border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 12px; padding: 14px 16px; font-size: 12px;
-  color: rgba(255,255,255,0.5); line-height: 2; max-height: 180px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 12px 16px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  line-height: 2;
+  max-height: 160px;
   overflow-y: auto;
+  font-family: monospace;
 }
-.log-entry { border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 4px; }
+.log-entry { border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 2px; }
 .log-entry:last-child { border-bottom: none; }
-.conn-status { text-align: center; font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 16px; }
+.conn-status {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  margin-top: 14px;
+  letter-spacing: 0.06em;
+}
 </style>
 </head>
 <body>
+
 <div class="top">
   <div>
-    <h1>Marathon Admin Dashboard</h1>
-    <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:3px">ติดตาม 4 นักวิ่ง · ตั้งสีและระยะเป้าหมาย</div>
+    <div class="top-title">Marathon Admin</div>
+    <div class="top-sub">ติดตาม 4 นักวิ่ง · ตั้งสีและระยะเป้าหมาย</div>
   </div>
   <div class="live-badge"><span class="dot"></span>LIVE</div>
 </div>
@@ -153,24 +297,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// ── 12 color palette (broadcast-friendly) ──
 const PALETTE = [
-  '#FACC15', // Yellow
-  '#EC4899', // Pink
-  '#22D3EE', // Cyan
-  '#A855F7', // Purple
-  '#10ff49', // Green
-  '#F97316', // Orange
-  '#EF4444', // Red
-  '#FFFFFF', // White
-  '#3B82F6', // Blue
-  '#06B6D4', // Teal
-  '#F59E0B', // Amber
-  '#84CC16', // Lime
+  '#FACC15','#EC4899','#22D3EE','#A855F7',
+  '#10ff49','#F97316','#EF4444','#FFFFFF',
+  '#3B82F6','#06B6D4','#F59E0B','#84CC16',
 ];
-
-// Default colors per runner if not set
-const DEFAULT_COLORS = ['#FACC15', '#EC4899', '#22D3EE', '#A855F7'];
+const DEFAULT_COLORS = ['#FACC15','#EC4899','#22D3EE','#A855F7'];
 
 const logs = [];
 function addLog(msg) {
@@ -180,7 +312,7 @@ function addLog(msg) {
   document.getElementById('logBox').innerHTML = logs.map(l=>`<div class="log-entry">${l}</div>`).join('');
 }
 
-window.manualSet = function(key, idx) {
+window.manualSet = function(key) {
   const val = parseFloat(document.getElementById('inp_'+key).value);
   const goal = parseFloat(document.getElementById('goalInp_'+key).value) || 42;
   if (isNaN(val) || val < 0 || val > goal) { alert('ใส่ตัวเลข 0–'+goal+' กม.'); return; }
@@ -189,7 +321,7 @@ window.manualSet = function(key, idx) {
   addLog(`[Manual] ${name} → ${val.toFixed(2)} กม.`);
 };
 
-window.setGoal = function(key, idx) {
+window.setGoal = function(key) {
   const val = parseFloat(document.getElementById('goalInp_'+key).value);
   if (isNaN(val) || val < 1 || val > 200) { alert('ใส่เป้าหมาย 1–200 กม.'); return; }
   const name = (window._cur[key] || {}).name || key;
@@ -203,6 +335,11 @@ window.setColor = function(key, color) {
   addLog(`[Color] ${name} → ${color}`);
 };
 
+window.toggleColor = function(key) {
+  const panel = document.getElementById('colorPanel_'+key);
+  panel.classList.toggle('open');
+};
+
 window._cur = {};
 
 function renderCard(key, data, idx) {
@@ -214,9 +351,9 @@ function renderCard(key, data, idx) {
   const acc = data.acc ? '±'+data.acc+'ม.' : '—';
 
   const swatches = PALETTE.map(c =>
-    `<div class="color-swatch ${c.toLowerCase() === color.toLowerCase() ? 'active' : ''}"
-          style="background:${c}; --swatch-color:${c}"
-          onclick="setColor('${key}', '${c}')"
+    `<div class="color-swatch ${c.toLowerCase()===color.toLowerCase()?'active':''}"
+          style="background:${c}"
+          onclick="setColor('${key}','${c}')"
           title="${c}"></div>`
   ).join('');
 
@@ -226,26 +363,23 @@ function renderCard(key, data, idx) {
       <div class="rank-badge">${idx+1}</div>
       <div>
         <div class="runner-name">${name}</div>
-        <div class="runner-sub">GPS แม่นยำ: ${acc}</div>
+        <div class="runner-sub">GPS: ${acc}</div>
       </div>
     </div>
+
     <div class="bar-wrap"><div class="bar-fill" style="width:${pct.toFixed(1)}%"></div></div>
     <div class="km-row">
-      <span class="km-main">${km.toFixed(2)} กม.</span>
-      <span class="km-of">/ ${goal} กม. (${pct.toFixed(0)}%)</span>
+      <span class="km-main">${km.toFixed(2)} KM</span>
+      <span class="km-of">/ ${goal} km · ${pct.toFixed(0)}%</span>
     </div>
 
     <div class="controls">
-      <div>
-        <span class="ctrl-label">🎨 สีของ OBS</span>
-        <div class="color-palette">${swatches}</div>
-      </div>
 
       <div>
-        <span class="ctrl-label">ระยะทางเป้าหมาย (กม.)</span>
+        <span class="ctrl-label">เป้าหมาย (กม.)</span>
         <div class="ctrl-row">
           <input type="number" id="goalInp_${key}" min="1" max="200" step="1" value="${goal}">
-          <button class="btn-set alt" onclick="setGoal('${key}',${idx})">ตั้งเป้า</button>
+          <button class="btn-set alt" onclick="setGoal('${key}')">SET</button>
         </div>
       </div>
 
@@ -253,9 +387,20 @@ function renderCard(key, data, idx) {
         <span class="ctrl-label">แก้ระยะด้วยมือ</span>
         <div class="ctrl-row">
           <input type="number" id="inp_${key}" min="0" max="200" step="0.1" placeholder="${km.toFixed(1)}">
-          <button class="btn-set" onclick="manualSet('${key}',${idx})">ตั้งค่า</button>
+          <button class="btn-set" onclick="manualSet('${key}')">SET</button>
         </div>
       </div>
+
+      <div>
+        <button class="color-toggle-btn" onclick="toggleColor('${key}')">
+          <span class="swatch-preview" style="background:${color}"></span>
+          OBS COLOR — ${color}
+        </button>
+        <div class="color-panel" id="colorPanel_${key}">
+          <div class="color-palette">${swatches}</div>
+        </div>
+      </div>
+
     </div>
   </div>`;
 }
@@ -269,16 +414,14 @@ onValue(ref(db, 'runners'), snap => {
   for (let i = 0; i < 4; i++) {
     const key = 'runner'+(i+1);
     const r = data[key] || {};
-
-    if (prevKm[key] !== undefined && Math.abs((r.km || 0) - prevKm[key]) > 0.01) {
-      addLog(`[GPS] ${r.name || key} → ${(r.km || 0).toFixed(2)} กม.`);
+    if (prevKm[key] !== undefined && Math.abs((r.km||0)-prevKm[key]) > 0.01) {
+      addLog(`[GPS] ${r.name||key} → ${(r.km||0).toFixed(2)} กม.`);
     }
     prevKm[key] = r.km || 0;
-
     html += renderCard(key, r, i);
   }
   document.getElementById('grid').innerHTML = html;
-  document.getElementById('connStatus').textContent = 'เชื่อมต่อ Firebase แล้ว · อัปเดตอัตโนมัติ';
+  document.getElementById('connStatus').textContent = 'เชื่อมต่อ Firebase · อัปเดตอัตโนมัติ';
 });
 </script>
 </body>
