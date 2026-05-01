@@ -2,21 +2,19 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Marathon OBS — Single Runner</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Kanit:wght@300;500&family=Chakra+Petch:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marathon OBS Display</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --c1: #FACC15;
-  --c2: #EC4899;
-  --c3: #00f2ea;
-  --c4: #A855F7;
+  --c1: #FACC15;   /* Yellow */
+  --c2: #EC4899;   /* Pink */
+  --c3: #22D3EE;   /* Cyan */
+  --c4: #A855F7;   /* Purple */
   --green: #10ff49;
-  --accent: #00f2ea;
-  --panel-bg: rgba(0,0,0,0.70);
-  --footer-bg: rgba(0,0,0,0.70);
-  --accent-bottom: transparent;
+  --accent: var(--c1);
 }
 
 html, body {
@@ -25,111 +23,112 @@ html, body {
   min-height: 100vh;
   overflow: hidden;
   font-family: 'Orbitron', sans-serif;
-  color: #ffffff;
 }
 
-/* ── Container — bottom-left ── */
-.stage {
+/* ── Card ── */
+.card {
   position: fixed;
   left: 60px;
   bottom: 60px;
-  width: 1000px;
+  width: 700px;
+  background-color: #4a4a4a;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
   opacity: 0;
   animation: fadeIn 0.6s 0.1s forwards;
 }
+.card.show { display: flex; }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── CARD ── */
-.card {
-  width: 100%;
-  background-color: rgba(0,0,0,0.70);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-}
-
-/* ── HEADER ── */
+/* ── Header ── */
 .header {
-  position: relative;
-  height: 80px;
-  border-bottom: 5px solid var(--accent);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  height: 70px;
+  border-bottom: 4px solid var(--accent);
 }
 
 .rank-box {
   background-color: var(--accent);
-  color: #ffffff;
-  width: 100px;
-  height: 100%;
+  color: white;
+  width: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 55px;
+  font-size: 50px;
   font-weight: bold;
-  position: absolute;
-  left: 0;
-  top: 0;
+  font-family: 'Orbitron', sans-serif;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .name-box {
-  color: #ffffff;
-  font-size: 42px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 38px;
+  letter-spacing: 3px;
+  font-family: 'Orbitron', 'Kanit', sans-serif;
   font-weight: 700;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  text-align: center;
-  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 12px;
+  min-width: 0;
 }
 
-/* ── CONTENT ── */
+/* Auto-shrink for very long names */
+.name-box.shrink-1 { font-size: 30px; letter-spacing: 2px; }
+.name-box.shrink-2 { font-size: 24px; letter-spacing: 1px; }
+
+/* ── Content ── */
 .content {
-  padding: 7px 0;
+  padding: 40px 0;
   text-align: center;
-  color: #ffffff;
+  color: white;
 }
 
 .distance-value {
-  font-size: 160px;
-  font-weight: 700;
+  font-size: 110px;
+  font-weight: 400;
   line-height: 1;
-  font-family: 'Chakra Petch', sans-serif;
-  letter-spacing: 2px;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .unit {
-  font-size: 50px;
-  margin-left: 15px;
+  font-size: 45px;
+  margin-left: 10px;
   font-weight: 300;
-  font-family: 'Kanit', sans-serif;
+  font-family: 'Orbitron', sans-serif;
 }
 
-/* ── FOOTER ── */
+/* ── Footer ── */
 .footer {
   width: 100%;
-  background-color: transparent;
+  background-color: #333;
+  position: relative;
 }
 
 .labels {
   display: flex;
   justify-content: space-around;
   color: #ffffff;
-  font-size: 28px;
-  padding: 12px 0;
-  font-weight: 400;
+  font-size: 18px;
+  padding: 10px 0;
+  font-weight: 300;
   font-family: 'Orbitron', sans-serif;
 }
 
 .progress-container {
   width: 100%;
-  height: 18px;
-  background-color: #ffffff;
+  height: 15px;
+  background-color: #e0e0e0;
   display: flex;
 }
 
@@ -138,16 +137,15 @@ html, body {
   height: 100%;
   background-color: var(--green);
   transition: width 1.2s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 0 12px rgba(16,255,73,0.5);
 }
 
 .bottom-accent {
-  height: 24px;
-  background-color: transparent;
+  height: 10px;
+  background-color: #555;
   width: 100%;
 }
 
-/* ── No data ── */
+/* No data / demo */
 .no-data {
   position: fixed;
   inset: 0;
@@ -155,14 +153,21 @@ html, body {
   align-items: center;
   justify-content: center;
   font-family: 'Orbitron', sans-serif;
-  font-size: 32px;
+  font-size: 28px;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.3);
 }
+body.has-data .no-data { display: none; }
 
-/* ── Demo mode ── */
 body.demo {
-  background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%) !important;
+  background:
+    linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%) !important;
+  background-size: 30px 30px !important;
+  background-position: 0 0, 0 15px, 15px -15px, -15px 0px !important;
+  background-color: #0d0d0d !important;
 }
 body.demo::before {
   content: 'DEMO';
@@ -170,46 +175,40 @@ body.demo::before {
   top: 16px; left: 50%;
   transform: translateX(-50%);
   padding: 4px 12px;
-  background: rgba(0,242,234,0.15);
-  border: 1px solid rgba(0,242,234,0.5);
+  background: rgba(234,179,8,0.2);
+  border: 1px solid rgba(234,179,8,0.6);
   border-radius: 3px;
-  color: #00f2ea;
+  color: #FCD34D;
   font-family: 'Orbitron', sans-serif;
   font-size: 12px;
   letter-spacing: 0.18em;
+  font-weight: 700;
   z-index: 1000;
 }
 </style>
 </head>
 <body>
 
-<div class="stage" id="stage" style="display:none;">
-  <div class="card">
+<div class="card" id="card">
+  <div class="header">
+    <div class="rank-box" id="rank">1</div>
+    <div class="name-box" id="name">RUNNER</div>
+  </div>
 
-    <!-- HEADER -->
-    <div class="header">
-      <div class="rank-box" id="numTag">1</div>
-      <div class="name-box" id="nameText">RUNNER</div>
+  <div class="content">
+    <span class="distance-value" id="distance">0.00</span><span class="unit">KM</span>
+  </div>
+
+  <div class="footer">
+    <div class="labels">
+      <span>10K</span>
+      <span>20K</span>
+      <span>30K</span>
     </div>
-
-    <!-- CONTENT -->
-    <div class="content">
-      <span class="distance-value" id="kmNum">0.00</span><span class="unit">KM</span>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
-
-    <!-- FOOTER -->
-    <div class="footer">
-      <div class="labels">
-        <span>10K</span>
-        <span>20K</span>
-        <span>30K</span>
-      </div>
-      <div class="progress-container">
-        <div class="progress-bar" id="barFill"></div>
-      </div>
-      <div class="bottom-accent"></div>
-    </div>
-
+    <div class="bottom-accent"></div>
   </div>
 </div>
 
@@ -229,47 +228,57 @@ const firebaseConfig = {
   appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
 };
 const app = initializeApp(firebaseConfig);
-const db  = getDatabase(app);
+const db = getDatabase(app);
 
-const params    = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
 const runnerNum = Math.min(4, Math.max(1, parseInt(params.get('runner') || '1')));
-const isDemo    = params.get('demo') === '1';
+const isDemo = params.get('demo') === '1';
 
-// Color per runner — accent changes rank-box & header border
-const COLORS = ['#FACC15', '#EC4899', '#00f2ea', '#A855F7'];
+const COLORS = ['#FACC15', '#EC4899', '#22D3EE', '#A855F7'];
+
 document.documentElement.style.setProperty('--accent', COLORS[runnerNum - 1]);
-document.getElementById('numTag').textContent = runnerNum;
+document.getElementById('rank').textContent = runnerNum;
 
-function formatName(name, idx) {
-  if (!name) return 'RUNNER ' + idx;
-  const en = name.match(/[A-Za-z]+/g);
-  if (en && en.length >= 2) {
-    return (en[0][0] + '.' + en[en.length - 1]).toUpperCase();
-  }
-  return name.toUpperCase();
+// Auto-shrink long names to fit
+function fitName(text) {
+  const el = document.getElementById('name');
+  el.classList.remove('shrink-1', 'shrink-2');
+  el.textContent = text;
+  // Wait for render then check overflow
+  requestAnimationFrame(() => {
+    if (el.scrollWidth > el.clientWidth) {
+      el.classList.add('shrink-1');
+      requestAnimationFrame(() => {
+        if (el.scrollWidth > el.clientWidth) {
+          el.classList.add('shrink-2');
+        }
+      });
+    }
+  });
 }
 
 function render(data) {
-  const km   = data.km   || 0;
+  const km = data.km || 0;
   const goal = data.goal || 42;
-  const name = data.name || ('Runner ' + runnerNum);
-  const pct  = Math.min(100, (km / goal) * 100);
+  // Use full name as entered — NO shortening
+  const name = (data.name || ('RUNNER ' + runnerNum)).toUpperCase();
+  const pct = Math.min(100, (km / goal) * 100);
 
-  document.getElementById('stage').style.display = 'block';
-  document.getElementById('noData').style.display = 'none';
+  document.body.classList.add('has-data');
+  document.getElementById('card').classList.add('show');
 
-  document.getElementById('nameText').textContent = formatName(name, runnerNum);
-  document.getElementById('kmNum').textContent    = km.toFixed(2);
-  document.getElementById('barFill').style.width  = pct.toFixed(2) + '%';
+  fitName(name);
+  document.getElementById('distance').textContent = km.toFixed(2);
+  document.getElementById('progressBar').style.width = pct.toFixed(2) + '%';
 }
 
 if (isDemo) {
   document.body.classList.add('demo');
   const demoData = [
-    { name: 'Ronaldo',     goal: 42, km: 10.00, _speed: 0.18 },
-    { name: 'John Smith',  goal: 21, km: 5.4,   _speed: 0.32 },
-    { name: 'Yuki Tanaka', goal: 10, km: 3.2,   _speed: 0.45 },
-    { name: 'M.Tengnon',   goal: 42, km: 12.67, _speed: 0.55 },
+    { name: 'Ronaldo',           goal: 42, km: 10.00, _speed: 0.18 },
+    { name: 'Lionel Messi',      goal: 42, km: 12.67, _speed: 0.32 },
+    { name: 'สมชาย ใจดี',         goal: 10, km: 3.20,  _speed: 0.45 },
+    { name: 'Yuki Tanaka',       goal: 21, km: 5.40,  _speed: 0.55 },
   ];
   const r = demoData[runnerNum - 1];
   render(r);
@@ -285,5 +294,6 @@ if (isDemo) {
   });
 }
 </script>
+
 </body>
 </html>
