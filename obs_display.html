@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marathon OBS Display</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Audiowide&family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Russo+One&family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -25,58 +25,103 @@ html, body {
   font-family: 'Orbitron', sans-serif;
 }
 
-/* ── Runner picker (top-right corner) ── */
-.picker {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  gap: 6px;
-  z-index: 100;
-  background: rgba(0,0,0,0.7);
-  padding: 6px;
-  border-radius: 6px;
-  backdrop-filter: blur(6px);
+/* ── HUB MODE: when no ?runner= is set, show big picker ── */
+.hub {
+  display: none;
+  min-height: 100vh;
+  background: #0d0d0d;
+  background-image:
+    linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+  background-size: 30px 30px;
+  background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
+  padding: 40px 20px;
+  flex-direction: column;
+  align-items: center;
 }
-.picker-label {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 10px;
+body.hub-mode .hub { display: flex; }
+body.hub-mode { background: #0d0d0d !important; }
+
+.hub-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 28px;
   letter-spacing: 0.15em;
-  color: rgba(255,255,255,0.5);
-  display: flex;
-  align-items: center;
-  padding: 0 8px 0 4px;
-  font-weight: 700;
-}
-.pick-btn {
-  width: 38px;
-  height: 38px;
-  border: 2px solid transparent;
-  background: #1a1a1a;
   color: #fff;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.hub-sub {
   font-family: 'Orbitron', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.15s;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 36px;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 720px;
+}
+@media (max-width: 600px) {
+  .hub-grid { grid-template-columns: 1fr; }
+}
+
+.hub-btn {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  background: #1a1a1a;
+  border: 2px solid var(--btn-c);
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  font-family: 'Russo One', sans-serif;
+  overflow: hidden;
+  transition: all 0.2s;
 }
-.pick-btn:hover {
-  background: #2a2a2a;
+.hub-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.5);
 }
-.pick-btn.active {
-  background: var(--btn-color);
+.hub-btn-num {
+  background: var(--btn-c);
   color: #000;
-  border-color: var(--btn-color);
+  font-size: 64px;
+  padding: 20px 0;
+  text-align: center;
+  line-height: 1;
+}
+.hub-btn-label {
+  padding: 14px 16px;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  text-align: center;
+  color: var(--btn-c);
 }
 
-/* Hide picker when in OBS (URL has &hide=1) */
-body.hide-picker .picker { display: none; }
+.hub-info {
+  margin-top: 30px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border-left: 3px solid var(--green);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.7;
+  max-width: 720px;
+  width: 100%;
+  border-radius: 0 4px 4px 0;
+}
+.hub-info b { color: var(--green); }
 
-/* ── Card ── */
+/* ── Card (when ?runner= is set) ── */
 .card {
   position: fixed;
   left: 60px;
@@ -95,7 +140,6 @@ body.hide-picker .picker { display: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Header ── */
 .header {
   display: flex;
   align-items: stretch;
@@ -133,23 +177,21 @@ body.hide-picker .picker { display: none; }
   padding: 0 12px;
   min-width: 0;
 }
-
 .name-box.shrink-1 { font-size: 30px; letter-spacing: 2px; }
 .name-box.shrink-2 { font-size: 24px; letter-spacing: 1px; }
 
-/* ── Content (KM display) ── */
 .content {
   padding: 40px 0;
   text-align: center;
   color: white;
 }
 
-/* AUDIOWIDE — only here */
+/* RUSSO ONE — only here */
 .distance-value {
   font-size: 110px;
   font-weight: 400;
   line-height: 1;
-  font-family: 'Audiowide', sans-serif;
+  font-family: 'Russo One', sans-serif;
   letter-spacing: 0.02em;
 }
 
@@ -157,11 +199,10 @@ body.hide-picker .picker { display: none; }
   font-size: 45px;
   margin-left: 10px;
   font-weight: 400;
-  font-family: 'Audiowide', sans-serif;
+  font-family: 'Russo One', sans-serif;
   letter-spacing: 0.04em;
 }
 
-/* ── Footer ── */
 .footer {
   width: 100%;
   background-color: #333;
@@ -198,11 +239,10 @@ body.hide-picker .picker { display: none; }
   width: 100%;
 }
 
-/* No data */
 .no-data {
   position: fixed;
   inset: 0;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   font-family: 'Orbitron', sans-serif;
@@ -210,7 +250,8 @@ body.hide-picker .picker { display: none; }
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.3);
 }
-body.has-data .no-data { display: none; }
+body.runner-mode .no-data { display: flex; }
+body.runner-mode.has-data .no-data { display: none; }
 
 /* Demo mode */
 body.demo {
@@ -243,16 +284,37 @@ body.demo::after {
 </head>
 <body>
 
-<!-- Runner picker (top-right) -->
-<div class="picker" id="picker">
-  <span class="picker-label">RUNNER</span>
-  <button class="pick-btn" data-r="1" style="--btn-color:#FACC15">1</button>
-  <button class="pick-btn" data-r="2" style="--btn-color:#EC4899">2</button>
-  <button class="pick-btn" data-r="3" style="--btn-color:#22D3EE">3</button>
-  <button class="pick-btn" data-r="4" style="--btn-color:#A855F7">4</button>
+<!-- Hub mode: shown when no ?runner= -->
+<div class="hub">
+  <div class="hub-title">MARATHON OBS DISPLAY</div>
+  <div class="hub-sub">เลือกนักวิ่งที่ต้องการเปิดในแท็บใหม่</div>
+
+  <div class="hub-grid">
+    <a class="hub-btn" data-r="1" style="--btn-c:#FACC15">
+      <div class="hub-btn-num">1</div>
+      <div class="hub-btn-label">RUNNER 1 · YELLOW</div>
+    </a>
+    <a class="hub-btn" data-r="2" style="--btn-c:#EC4899">
+      <div class="hub-btn-num">2</div>
+      <div class="hub-btn-label">RUNNER 2 · PINK</div>
+    </a>
+    <a class="hub-btn" data-r="3" style="--btn-c:#22D3EE">
+      <div class="hub-btn-num">3</div>
+      <div class="hub-btn-label">RUNNER 3 · CYAN</div>
+    </a>
+    <a class="hub-btn" data-r="4" style="--btn-c:#A855F7">
+      <div class="hub-btn-num">4</div>
+      <div class="hub-btn-label">RUNNER 4 · PURPLE</div>
+    </a>
+  </div>
+
+  <div class="hub-info">
+    💡 <b>วิธีใช้กับ OBS:</b> คลิกปุ่ม → จะเปิดแท็บใหม่ → copy URL ของแท็บนั้น → ใส่ใน OBS Browser Source<br>
+    🎬 <b>ทดลองดู:</b> เพิ่ม <code style="color:#fff">?demo=1</code> ท้าย URL จะเห็นนักวิ่งจำลอง
+  </div>
 </div>
 
-<!-- The OBS card -->
+<!-- Runner card mode -->
 <div class="card" id="card">
   <div class="header">
     <div class="rank-box" id="rank">1</div>
@@ -295,82 +357,83 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const params = new URLSearchParams(window.location.search);
-const runnerNum = Math.min(4, Math.max(1, parseInt(params.get('runner') || '1')));
+const runnerParam = params.get('runner');
 const isDemo = params.get('demo') === '1';
-const hidePicker = params.get('hide') === '1';
 
 const COLORS = ['#FACC15', '#EC4899', '#22D3EE', '#A855F7'];
 
-document.documentElement.style.setProperty('--accent', COLORS[runnerNum - 1]);
-document.getElementById('rank').textContent = runnerNum;
-
-if (hidePicker) {
-  document.body.classList.add('hide-picker');
-}
-
-// Mark active picker button
-document.querySelectorAll('.pick-btn').forEach(btn => {
-  if (parseInt(btn.dataset.r) === runnerNum) btn.classList.add('active');
-  btn.addEventListener('click', () => {
+// ── HUB MODE (no runner specified) ──
+if (!runnerParam) {
+  document.body.classList.add('hub-mode');
+  // Wire up hub buttons to open in new tab
+  document.querySelectorAll('.hub-btn').forEach(btn => {
     const r = btn.dataset.r;
-    // Preserve other params
     const newParams = new URLSearchParams(window.location.search);
     newParams.set('runner', r);
-    window.location.search = '?' + newParams.toString();
+    btn.href = window.location.pathname + '?' + newParams.toString();
+    btn.target = '_blank';   // 👉 open in new tab
+    btn.rel = 'noopener';
   });
-});
-
-// Auto-shrink long names
-function fitName(text) {
-  const el = document.getElementById('name');
-  el.classList.remove('shrink-1', 'shrink-2');
-  el.textContent = text;
-  requestAnimationFrame(() => {
-    if (el.scrollWidth > el.clientWidth) {
-      el.classList.add('shrink-1');
-      requestAnimationFrame(() => {
-        if (el.scrollWidth > el.clientWidth) {
-          el.classList.add('shrink-2');
-        }
-      });
-    }
-  });
-}
-
-function render(data) {
-  const km = data.km || 0;
-  const goal = data.goal || 42;
-  const name = (data.name || ('RUNNER ' + runnerNum)).toUpperCase();
-  const pct = Math.min(100, (km / goal) * 100);
-
-  document.body.classList.add('has-data');
-  document.getElementById('card').classList.add('show');
-
-  fitName(name);
-  document.getElementById('distance').textContent = km.toFixed(2);
-  document.getElementById('progressBar').style.width = pct.toFixed(2) + '%';
-}
-
-if (isDemo) {
-  document.body.classList.add('demo');
-  const demoData = [
-    { name: 'Ronaldo',           goal: 42, km: 10.00, _speed: 0.18 },
-    { name: 'Lionel Messi',      goal: 42, km: 12.67, _speed: 0.32 },
-    { name: 'สมชาย ใจดี',         goal: 10, km: 3.20,  _speed: 0.45 },
-    { name: 'Yuki Tanaka',       goal: 21, km: 5.40,  _speed: 0.55 },
-  ];
-  const r = demoData[runnerNum - 1];
-  render(r);
-  setInterval(() => {
-    if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
-    render(r);
-  }, 2000);
 } else {
-  const key = 'runner' + runnerNum;
-  onValue(ref(db, 'runners/' + key), snap => {
-    const data = snap.val();
-    if (data) render(data);
-  });
+  // ── RUNNER MODE ──
+  document.body.classList.add('runner-mode');
+  const runnerNum = Math.min(4, Math.max(1, parseInt(runnerParam)));
+
+  document.documentElement.style.setProperty('--accent', COLORS[runnerNum - 1]);
+  document.getElementById('rank').textContent = runnerNum;
+
+  // Auto-shrink long names
+  function fitName(text) {
+    const el = document.getElementById('name');
+    el.classList.remove('shrink-1', 'shrink-2');
+    el.textContent = text;
+    requestAnimationFrame(() => {
+      if (el.scrollWidth > el.clientWidth) {
+        el.classList.add('shrink-1');
+        requestAnimationFrame(() => {
+          if (el.scrollWidth > el.clientWidth) {
+            el.classList.add('shrink-2');
+          }
+        });
+      }
+    });
+  }
+
+  function render(data) {
+    const km = data.km || 0;
+    const goal = data.goal || 42;
+    const name = (data.name || ('RUNNER ' + runnerNum)).toUpperCase();
+    const pct = Math.min(100, (km / goal) * 100);
+
+    document.body.classList.add('has-data');
+    document.getElementById('card').classList.add('show');
+
+    fitName(name);
+    document.getElementById('distance').textContent = km.toFixed(2);
+    document.getElementById('progressBar').style.width = pct.toFixed(2) + '%';
+  }
+
+  if (isDemo) {
+    document.body.classList.add('demo');
+    const demoData = [
+      { name: 'Ronaldo',           goal: 42, km: 10.00, _speed: 0.18 },
+      { name: 'Lionel Messi',      goal: 42, km: 12.67, _speed: 0.32 },
+      { name: 'สมชาย ใจดี',         goal: 10, km: 3.20,  _speed: 0.45 },
+      { name: 'Yuki Tanaka',       goal: 21, km: 5.40,  _speed: 0.55 },
+    ];
+    const r = demoData[runnerNum - 1];
+    render(r);
+    setInterval(() => {
+      if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
+      render(r);
+    }, 2000);
+  } else {
+    const key = 'runner' + runnerNum;
+    onValue(ref(db, 'runners/' + key), snap => {
+      const data = snap.val();
+      if (data) render(data);
+    });
+  }
 }
 </script>
 
