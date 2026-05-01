@@ -4,204 +4,201 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Marathon Tracker — Home</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
 body {
   font-family: 'Sarabun', sans-serif;
-  background: #0a0f1e;
+  background: #080808;
   color: #fff;
   min-height: 100vh;
-  padding: 32px 20px;
-  background-image:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(34,197,94,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(59,130,246,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(168,85,247,0.06) 0%, transparent 60%);
+  padding: 40px 20px;
 }
 
-.wrap { max-width: 720px; margin: 0 auto; }
+.wrap { max-width: 680px; margin: 0 auto; }
 
+/* ── HERO ── */
 .hero {
   text-align: center;
-  margin-bottom: 32px;
-  padding-top: 20px;
+  margin-bottom: 40px;
+  padding-top: 12px;
 }
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 12px;
-  background: rgba(74,222,128,0.1);
-  border: 1px solid rgba(74,222,128,0.3);
-  border-radius: 100px;
-  font-size: 11px; font-weight: 700;
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #4ade80;
   color: #4ade80;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  padding: 4px 14px;
+  margin-bottom: 20px;
 }
-.eyebrow .d { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pl 1.4s infinite; }
-@keyframes pl { 0%,100%{opacity:1} 50%{opacity:.3} }
+.dot {
+  width: 6px; height: 6px;
+  background: #4ade80;
+  display: inline-block;
+  animation: bl 1.4s infinite;
+}
+@keyframes bl { 0%,100%{opacity:1} 50%{opacity:.2} }
+
 h1 {
-  font-size: clamp(28px, 6vw, 40px);
-  font-weight: 900;
-  letter-spacing: -.02em;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
   margin-bottom: 10px;
-  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 .tagline {
-  font-size: 14px;
-  color: rgba(255,255,255,0.5);
-  max-width: 480px;
-  margin: 0 auto;
-  line-height: 1.6;
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 16px;
+  margin-top: 16px;
 }
 
-.cards {
-  display: grid;
-  gap: 14px;
-  margin-bottom: 32px;
-}
+/* ── CARDS ── */
+.cards { display: grid; gap: 10px; margin-bottom: 28px; }
 
 .card {
-  background: #131929;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 18px;
-  padding: 22px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-left: 3px solid var(--accent);
+  padding: 20px 22px;
   text-decoration: none;
   color: inherit;
   display: flex;
   align-items: center;
   gap: 18px;
-  transition: all .25s cubic-bezier(.4,0,.2,1);
+  transition: background 0.15s, transform 0.1s;
   position: relative;
-  overflow: hidden;
 }
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .3s;
-}
-.card:hover {
-  border-color: rgba(255,255,255,0.16);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
-}
-.card:hover::before { transform: scaleX(1); }
-.card:active { transform: translateY(0); }
+.card:hover { background: rgba(255,255,255,0.04); transform: translateX(3px); }
+.card:active { transform: translateX(0); }
 
-.card.gps { --accent: #22c55e; }
+.card.gps   { --accent: #4ade80; }
 .card.admin { --accent: #3b82f6; }
-.card.obs { --accent: #a855f7; }
-.card.demo { --accent: #f59e0b; }
+.card.obs   { --accent: #a855f7; }
+.card.demo  { --accent: #f59e0b; }
 
-.card-icon {
-  width: 56px; height: 56px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, transparent), color-mix(in srgb, var(--accent) 10%, transparent));
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 26px;
+.card-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+  width: 36px;
   flex-shrink: 0;
+  line-height: 1;
 }
-
 .card-body { flex: 1; min-width: 0; }
 .card-title {
-  font-size: 17px;
-  font-weight: 800;
-  margin-bottom: 4px;
-  letter-spacing: -.005em;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  color: #fff;
 }
 .card-sub {
-  font-size: 13px;
-  color: rgba(255,255,255,0.55);
-  line-height: 1.5;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
 }
-
 .card-arrow {
-  font-size: 22px;
-  color: rgba(255,255,255,0.3);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  color: rgba(255,255,255,0.2);
   flex-shrink: 0;
-  transition: transform .25s, color .25s;
+  transition: color 0.2s, transform 0.2s;
 }
 .card:hover .card-arrow {
-  transform: translateX(4px);
   color: var(--accent);
+  transform: translateX(4px);
 }
 
+/* ── DIVIDER ── */
 .divider {
   display: flex; align-items: center; gap: 12px;
-  margin: 28px 0 16px;
-  font-size: 11px; font-weight: 700;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: .12em;
+  margin: 22px 0 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 .divider::before, .divider::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.06);
 }
 
+/* ── INFO BOX ── */
 .info-box {
-  background: rgba(255,255,255,0.03);
+  background: #111;
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px;
-  padding: 18px;
+  border-top: 2px solid rgba(255,255,255,0.12);
+  padding: 18px 20px;
   font-size: 13px;
-  color: rgba(255,255,255,0.65);
-  line-height: 1.7;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
 }
-.info-box strong { color: #fff; font-weight: 700; }
+.info-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.info-box ul { padding-left: 18px; }
+.info-box li { margin-bottom: 6px; }
+.info-box strong { color: rgba(255,255,255,0.8); font-weight: 700; }
 .info-box code {
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.5);
   padding: 2px 7px;
-  border-radius: 5px;
-  font-size: 12px;
+  font-size: 11px;
   color: #fcd34d;
   font-family: 'SF Mono', Menlo, monospace;
+  border: 1px solid rgba(252,211,77,0.2);
 }
-.info-box ul { padding-left: 20px; margin-top: 6px; }
-.info-box li { margin-bottom: 4px; }
 
+/* ── FOOTER ── */
 .footer {
   text-align: center;
-  margin-top: 32px;
-  font-size: 12px;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: .04em;
-}
-.footer .ver {
-  display: inline-block;
-  padding: 2px 8px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 100px;
+  margin-top: 28px;
+  font-family: 'Orbitron', sans-serif;
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  margin-right: 6px;
+  color: rgba(255,255,255,0.15);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 20px;
 }
 </style>
 </head>
 <body>
 <div class="wrap">
 
+  <!-- HERO -->
   <div class="hero">
-    <div class="eyebrow"><span class="d"></span>LIVE TRACKER</div>
+    <div class="live-badge"><span class="dot"></span>LIVE TRACKER</div>
     <h1>Marathon GPS Tracker</h1>
-    <p class="tagline">ระบบติดตามตำแหน่งนักวิ่ง 4 คน · จัดการธงชาติ ระยะเป้าหมาย และแสดงผลใน OBS</p>
+    <p class="tagline">ระบบติดตามตำแหน่งนักวิ่ง 4 คน · จัดการระยะเป้าหมาย และแสดงผลใน OBS</p>
   </div>
 
+  <!-- CARDS -->
   <div class="cards">
 
     <a href="gps_sender.html" class="card gps">
-      <div class="card-icon">📍</div>
+      <div class="card-num">01</div>
       <div class="card-body">
         <div class="card-title">GPS Sender</div>
         <div class="card-sub">ช่างภาพเปิดบน iPhone · ส่งตำแหน่งทุก 5 วินาที</div>
@@ -210,16 +207,16 @@ h1 {
     </a>
 
     <a href="admin_dashboard.html" class="card admin">
-      <div class="card-icon">🎛️</div>
+      <div class="card-num">02</div>
       <div class="card-body">
         <div class="card-title">Admin Dashboard</div>
-        <div class="card-sub">ภาพรวม · เลือกธงชาติ · ตั้งระยะเป้าหมาย · แก้ระยะมือ</div>
+        <div class="card-sub">ภาพรวม · ตั้งสี · ระยะเป้าหมาย · แก้ระยะมือ</div>
       </div>
       <div class="card-arrow">→</div>
     </a>
 
     <a href="obs_display.html" class="card obs">
-      <div class="card-icon">📺</div>
+      <div class="card-num">03</div>
       <div class="card-body">
         <div class="card-title">OBS Display</div>
         <div class="card-sub">ใส่เป็น Browser Source ใน OBS · แสดงผลสด</div>
@@ -229,30 +226,28 @@ h1 {
 
     <div class="divider">ทดลอง</div>
 
-    <a href="obs_display.html?demo=1" class="card demo">
-      <div class="card-icon">🎬</div>
+    <a href="obs_display.html?runner=1&demo=1" class="card demo">
+      <div class="card-num">—</div>
       <div class="card-body">
-        <div class="card-title">OBS Display (Demo)</div>
-        <div class="card-sub">ทดลองดูหน้าตา OBS — มีนักวิ่งจำลอง 4 คน วิ่งจริง</div>
+        <div class="card-title">Demo Mode</div>
+        <div class="card-sub">ทดลองดูหน้าตา OBS · มีนักวิ่งจำลอง 4 คน วิ่งจริง</div>
       </div>
       <div class="card-arrow">→</div>
     </a>
 
   </div>
 
+  <!-- INFO -->
   <div class="info-box">
-    <strong>วิธีใช้</strong>
+    <div class="info-title">วิธีใช้</div>
     <ul>
-      <li>ช่างภาพเปิด <code>GPS Sender</code> บน iPhone — เลือกหมายเลขช่างภาพ ใส่ชื่อนักวิ่ง ตั้งระยะเป้า แล้วกดเริ่ม</li>
-      <li>ทีมงาน Live เปิด <code>Admin Dashboard</code> เพื่อเลือกธงชาติให้แต่ละคน และดูภาพรวม</li>
-      <li>ใส่ <code>OBS Display</code> เป็น Browser Source ใน OBS — พื้นหลังโปร่งใส 680×220px</li>
+      <li>ช่างภาพเปิด <strong>GPS Sender</strong> บน iPhone — เลือกหมายเลข ใส่ชื่อนักวิ่ง ตั้งระยะเป้า แล้วกดเริ่ม</li>
+      <li>ทีมงาน Live เปิด <strong>Admin Dashboard</strong> เพื่อตั้งสีและดูภาพรวม</li>
+      <li>ใส่ <strong>OBS Display</strong> เป็น <code>Browser Source</code> ใน OBS</li>
     </ul>
   </div>
 
-  <div class="footer">
-    <span class="ver">v1.1</span>
-    powered by Firebase Realtime Database
-  </div>
+  <div class="footer">v1.1 · powered by Firebase Realtime Database</div>
 
 </div>
 </body>
