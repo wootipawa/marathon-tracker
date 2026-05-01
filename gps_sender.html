@@ -6,101 +6,184 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>GPS ช่างภาพ</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
 body {
   font-family: 'Sarabun', sans-serif;
-  background: #0a0f1e;
+  background: #080808;
   color: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px 20px;
-  background-image:
-    radial-gradient(ellipse 60% 40% at 20% 0%, rgba(34,197,94,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 30% at 80% 100%, rgba(59,130,246,0.06) 0%, transparent 60%);
+  padding: 32px 20px;
 }
+
 .card {
-  background: #131929;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 3px solid #4ade80;
   padding: 28px 24px;
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
 }
-h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; letter-spacing: -.01em; }
-.sub { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 24px; }
-.field { margin-bottom: 16px; }
-label { font-size: 11px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+
+/* ── HEADER ── */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #4ade80;
+  color: #4ade80;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  padding: 3px 10px;
+}
+.dot { width: 6px; height: 6px; background: #4ade80; display: inline-block; animation: bl 1.4s infinite; }
+@keyframes bl { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+.sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.04em;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── WARN ── */
+.route-warn {
+  background: rgba(251,191,36,0.06);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-left: 3px solid #fbbf24;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: rgba(251,211,77,0.8);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* ── FIELDS ── */
+.field { margin-bottom: 14px; }
+label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  display: block;
+  margin-bottom: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 select, input {
   width: 100%;
-  padding: 12px 14px;
-  background: #0a0f1e;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 10px;
+  padding: 11px 14px;
+  background: #080808;
+  border: 1px solid rgba(255,255,255,0.1);
   color: #fff;
-  font-size: 16px;
+  font-size: 15px;
   font-family: 'Sarabun', sans-serif;
   appearance: none;
   outline: none;
-  transition: border-color .2s;
+  transition: border-color 0.2s;
 }
-select:focus, input:focus { border-color: #22c55e; }
-select option { background: #131929; }
+select:focus, input:focus { border-color: #4ade80; }
+select option { background: #111; }
+
+/* ── BUTTONS ── */
 .btn {
   width: 100%;
-  padding: 15px;
-  border-radius: 12px;
+  padding: 14px;
   border: none;
-  font-size: 17px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
   font-weight: 700;
-  font-family: 'Sarabun', sans-serif;
+  letter-spacing: 0.1em;
   cursor: pointer;
-  transition: all .2s;
-  margin-top: 8px;
+  transition: all 0.15s;
+  margin-top: 10px;
+  text-transform: uppercase;
 }
-.btn-start { background: #22c55e; color: #052e16; }
-.btn-start:active { transform: scale(0.97); background: #16a34a; }
-.btn-stop { background: #ef4444; color: #fff; display: none; }
-.btn-stop:active { transform: scale(0.97); background: #dc2626; }
+.btn-start { background: #4ade80; color: #052e16; }
+.btn-start:hover { background: #22c55e; }
+.btn-start:active { transform: scale(0.98); }
+.btn-stop { background: transparent; border: 1px solid #ef4444; color: #ef4444; display: none; }
+.btn-stop:hover { background: rgba(239,68,68,0.08); }
+.btn-stop:active { transform: scale(0.98); }
+
+/* ── STATUS ── */
 .status-box {
-  margin-top: 20px;
-  background: #0a0f1e;
-  border-radius: 12px;
+  margin-top: 18px;
+  background: #080808;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-left: 3px solid #4ade80;
   padding: 16px;
-  border: 1px solid rgba(255,255,255,0.07);
   display: none;
 }
 .status-box.show { display: block; }
-.status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.status-row:last-child { margin-bottom: 0; }
-.s-label { font-size: 12px; color: rgba(255,255,255,0.4); }
-.s-val { font-size: 14px; font-weight: 700; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block; margin-right: 6px; animation: pulse 1.4s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.8)} }
-.err { color: #f87171; font-size: 13px; margin-top: 12px; text-align: center; display: none; }
-.route-warn {
-  background: rgba(251,191,36,0.1);
-  border: 1px solid rgba(251,191,36,0.25);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 12px;
-  color: #fcd34d;
-  margin-bottom: 18px;
-  line-height: 1.6;
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.status-row:last-child { border-bottom: none; }
+.s-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.s-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+.err {
+  font-family: 'Orbitron', sans-serif;
+  color: #ef4444;
+  font-size: 11px;
+  margin-top: 12px;
+  text-align: center;
+  letter-spacing: 0.06em;
+  display: none;
 }
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>GPS ช่างภาพ</h1>
+
+  <div class="card-header">
+    <h1>GPS Sender</h1>
+    <div class="live-badge"><span class="dot"></span>GPS</div>
+  </div>
   <p class="sub">เปิดทิ้งไว้ระหว่างวิ่ง · ส่งอัตโนมัติทุก 5 วินาที</p>
 
   <div class="route-warn">
-    ⚠️ ต้องเปิดหน้าจอทิ้งไว้ตลอด และอนุญาต GPS เมื่อ Safari ถาม
+    ต้องเปิดหน้าจอทิ้งไว้ตลอด และอนุญาต GPS เมื่อ Safari ถาม
   </div>
 
   <div class="field">
@@ -115,7 +198,7 @@ select option { background: #131929; }
 
   <div class="field">
     <label>ชื่อนักวิ่งที่ตาม</label>
-    <input type="text" id="runnerName" placeholder="ชื่อนักวิ่ง" value="">
+    <input type="text" id="runnerName" placeholder="ชื่อนักวิ่ง">
   </div>
 
   <div class="field">
@@ -124,7 +207,7 @@ select option { background: #131929; }
   </div>
 
   <div class="field">
-    <label>จุดเริ่มต้น (lat, lng) — ใส่พิกัด GPS ตรงเส้นสตาร์ท</label>
+    <label>จุดเริ่มต้น (lat, lng)</label>
     <input type="text" id="startCoord" placeholder="เช่น 13.7563, 100.5018">
   </div>
 
@@ -138,10 +221,10 @@ select option { background: #131929; }
     </div>
     <div class="status-row">
       <span class="s-label">ระยะทาง</span>
-      <span class="s-val" id="stKm">0.00 กม.</span>
+      <span class="s-val" id="stKm">0.00 KM</span>
     </div>
     <div class="status-row">
-      <span class="s-label">ความแม่นยำ GPS</span>
+      <span class="s-label">ความแม่นยำ</span>
       <span class="s-val" id="stAcc">—</span>
     </div>
     <div class="status-row">
@@ -149,6 +232,7 @@ select option { background: #131929; }
       <span class="s-val" id="stTime">—</span>
     </div>
   </div>
+
   <p class="err" id="errMsg"></p>
 </div>
 
@@ -156,7 +240,6 @@ select option { background: #131929; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ===== Firebase Config =====
 const firebaseConfig = {
   apiKey: "AIzaSyB9RxP_jFuecXLyT7szJMnQYywIeVuqk34",
   authDomain: "marathon-tracker-f7e06.firebaseapp.com",
@@ -166,7 +249,6 @@ const firebaseConfig = {
   messagingSenderId: "217799472779",
   appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
 };
-// ============================
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -182,13 +264,13 @@ let currentGoal = 42;
 function toRad(d) { return d * Math.PI / 180; }
 function haversine(la1, lo1, la2, lo2) {
   const R = 6371;
-  const dLa = toRad(la2 - la1), dLo = toRad(lo2 - lo1);
+  const dLa = toRad(la2-la1), dLo = toRad(lo2-lo1);
   const a = Math.sin(dLa/2)**2 + Math.cos(toRad(la1))*Math.cos(toRad(la2))*Math.sin(dLo/2)**2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
 window.startTracking = async function() {
-  const key = document.getElementById('runnerSel').value;
+  const key  = document.getElementById('runnerSel').value;
   const name = document.getElementById('runnerName').value.trim() || ('ช่างภาพ ' + key.slice(-1));
   const goal = parseFloat(document.getElementById('goalKm').value) || 42;
   const coordRaw = document.getElementById('startCoord').value.trim();
@@ -210,22 +292,18 @@ window.startTracking = async function() {
     err.style.display = 'block'; return;
   }
 
-  // Save name + goal immediately (preserve existing flag if any)
-  await set(ref(db, 'runners/' + key + '/name'), name);
-  await set(ref(db, 'runners/' + key + '/goal'), goal);
-  await set(ref(db, 'runners/' + key + '/km'), 0);
+  await set(ref(db, 'runners/'+key+'/name'), name);
+  await set(ref(db, 'runners/'+key+'/goal'), goal);
+  await set(ref(db, 'runners/'+key+'/km'), 0);
 
   document.getElementById('btnStart').style.display = 'none';
-  document.getElementById('btnStop').style.display = 'block';
+  document.getElementById('btnStop').style.display  = 'block';
   document.getElementById('statusBox').classList.add('show');
   document.getElementById('stStatus').textContent = 'กำลังหา GPS...';
 
   watchId = navigator.geolocation.watchPosition(
     pos => { lastPos = pos; updateFromPos(pos, key, name); },
-    e => {
-      err.textContent = 'GPS Error: ' + e.message;
-      err.style.display = 'block';
-    },
+    e   => { err.textContent = 'GPS Error: '+e.message; err.style.display='block'; },
     { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
   );
 
@@ -242,17 +320,15 @@ async function updateFromPos(pos, key, name) {
   if (!startLat) { startLat = lat; startLng = lng; }
   if (lastLat !== null) {
     const d = haversine(lastLat, lastLng, lat, lng);
-    if (d > 0.005 && d < 0.5) totalKm += d; // ignore noise <5m and jumps >500m
+    if (d > 0.005 && d < 0.5) totalKm += d;
   }
   lastLat = lat; lastLng = lng;
 
   const km = Math.min(currentGoal, totalKm);
-
-  // Read existing runner data and only update tracking fields (preserve flag)
-  const snap = await get(ref(db, 'runners/' + key));
+  const snap = await get(ref(db, 'runners/'+key));
   const existing = snap.val() || {};
 
-  await set(ref(db, 'runners/' + key), {
+  await set(ref(db, 'runners/'+key), {
     ...existing,
     name,
     goal: currentGoal,
@@ -261,10 +337,10 @@ async function updateFromPos(pos, key, name) {
     acc: Math.round(acc)
   });
 
-  document.getElementById('stStatus').textContent = 'กำลังส่ง ✓';
-  document.getElementById('stKm').textContent = km.toFixed(2) + ' กม.';
-  document.getElementById('stAcc').textContent = '±' + Math.round(acc) + ' ม.';
-  document.getElementById('stTime').textContent = new Date().toLocaleTimeString('th-TH');
+  document.getElementById('stStatus').textContent = 'SENDING';
+  document.getElementById('stKm').textContent     = km.toFixed(2) + ' KM';
+  document.getElementById('stAcc').textContent    = '±' + Math.round(acc) + 'M';
+  document.getElementById('stTime').textContent   = new Date().toLocaleTimeString('th-TH');
 }
 
 window.stopTracking = function() {
@@ -272,9 +348,8 @@ window.stopTracking = function() {
   if (intervalId) clearInterval(intervalId);
   watchId = null; intervalId = null;
   document.getElementById('btnStart').style.display = 'block';
-  document.getElementById('btnStop').style.display = 'none';
+  document.getElementById('btnStop').style.display  = 'none';
   document.getElementById('statusBox').classList.remove('show');
-  document.getElementById('stStatus').textContent = 'หยุดแล้ว';
 };
 </script>
 </body>
