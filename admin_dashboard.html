@@ -272,7 +272,17 @@ body {
     <div class="top-title">Marathon Admin</div>
     <div class="top-sub">ติดตาม 4 นักวิ่ง · ตั้งสีและระยะเป้าหมาย</div>
   </div>
-  <div class="live-badge"><span class="dot"></span>LIVE</div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button onclick="initRunners()" style="
+      background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);
+      font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:0.1em;padding:4px 12px;
+      cursor:pointer;text-transform:uppercase;transition:all 0.15s;
+    " onmouseover="this.style.borderColor='#fff';this.style.color='#fff'"
+       onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='rgba(255,255,255,0.4)'">
+      INIT RUNNERS
+    </button>
+    <div class="live-badge"><span class="dot"></span>LIVE</div>
+  </div>
 </div>
 
 <div class="grid" id="grid"></div>
@@ -329,7 +339,26 @@ window.setGoal = function(key) {
   addLog(`[Goal] ${name} → ${val} กม.`);
 };
 
-window.setName = function(key) {
+window.initRunners = async function() {
+  if (!confirm('สร้างข้อมูลเริ่มต้นทั้ง 4 คน? (จะ reset km เป็น 0)')) return;
+  const defaults = [
+    { name: 'Runner 1', goal: 42, color: '#FACC15' },
+    { name: 'Runner 2', goal: 42, color: '#EC4899' },
+    { name: 'Runner 3', goal: 42, color: '#22D3EE' },
+    { name: 'Runner 4', goal: 42, color: '#A855F7' },
+  ];
+  for (let i = 0; i < 4; i++) {
+    const key = 'runner'+(i+1);
+    const existing = (window._cur[key] || {});
+    await set(ref(db, 'runners/'+key), {
+      name:  existing.name  || defaults[i].name,
+      goal:  existing.goal  || defaults[i].goal,
+      color: existing.color || defaults[i].color,
+      km: 0,
+    });
+  }
+  addLog('[Init] สร้างข้อมูลนักวิ่ง 4 คนเรียบร้อย');
+};
   const val = document.getElementById('nameInp_'+key).value.trim();
   if (!val) { alert('ใส่ชื่อนักวิ่งด้วยครับ'); return; }
   set(ref(db, 'runners/'+key+'/name'), val);
