@@ -2,19 +2,21 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marathon OBS Display</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Russo+One&family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Marathon OBS — Single Runner</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Kanit:wght@300;500&family=Chakra+Petch:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --c1: #FACC15;   /* Yellow */
-  --c2: #EC4899;   /* Pink */
-  --c3: #22D3EE;   /* Cyan */
-  --c4: #A855F7;   /* Purple */
+  --c1: #FACC15;
+  --c2: #EC4899;
+  --c3: #00f2ea;
+  --c4: #A855F7;
   --green: #10ff49;
-  --accent: var(--c1);
+  --accent: #00f2ea;
+  --panel-bg: rgba(0,0,0,0.70);
+  --footer-bg: rgba(0,0,0,0.70);
+  --accent-bottom: transparent;
 }
 
 html, body {
@@ -23,206 +25,111 @@ html, body {
   min-height: 100vh;
   overflow: hidden;
   font-family: 'Orbitron', sans-serif;
+  color: #ffffff;
 }
 
-/* ── HUB MODE: when no ?runner= is set, show big picker ── */
-.hub {
-  display: none;
-  min-height: 100vh;
-  background: #0d0d0d;
-  background-image:
-    linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
-    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
-    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
-  background-size: 30px 30px;
-  background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
-  padding: 40px 20px;
-  flex-direction: column;
-  align-items: center;
-}
-body.hub-mode .hub { display: flex; }
-body.hub-mode { background: #0d0d0d !important; }
-
-.hub-title {
-  font-family: 'Russo One', sans-serif;
-  font-size: 28px;
-  letter-spacing: 0.15em;
-  color: #fff;
-  margin-bottom: 8px;
-  text-align: center;
-}
-.hub-sub {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 36px;
-  text-align: center;
-  letter-spacing: 0.08em;
-}
-
-.hub-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  width: 100%;
-  max-width: 720px;
-}
-@media (max-width: 600px) {
-  .hub-grid { grid-template-columns: 1fr; }
-}
-
-.hub-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  background: #1a1a1a;
-  border: 2px solid var(--btn-c);
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-  color: #fff;
-  font-family: 'Russo One', sans-serif;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-.hub-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.5);
-}
-.hub-btn-num {
-  background: var(--btn-c);
-  color: #000;
-  font-size: 64px;
-  padding: 20px 0;
-  text-align: center;
-  line-height: 1;
-}
-.hub-btn-label {
-  padding: 14px 16px;
-  font-size: 14px;
-  letter-spacing: 0.15em;
-  text-align: center;
-  color: var(--btn-c);
-}
-
-.hub-info {
-  margin-top: 30px;
-  padding: 14px 18px;
-  background: rgba(255,255,255,0.04);
-  border-left: 3px solid var(--green);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 12px;
-  color: #aaa;
-  line-height: 1.7;
-  max-width: 720px;
-  width: 100%;
-  border-radius: 0 4px 4px 0;
-}
-.hub-info b { color: var(--green); }
-
-/* ── Card (when ?runner= is set) ── */
-.card {
+/* ── Container — bottom-left ── */
+.stage {
   position: fixed;
   left: 60px;
   bottom: 60px;
-  width: 700px;
-  background-color: #4a4a4a;
-  display: none;
-  flex-direction: column;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  width: 1000px;
   opacity: 0;
   animation: fadeIn 0.6s 0.1s forwards;
 }
-.card.show { display: flex; }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.header {
+/* ── CARD ── */
+.card {
+  width: 100%;
+  background-color: rgba(0,0,0,0.70);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
-  align-items: stretch;
-  height: 70px;
-  border-bottom: 4px solid var(--accent);
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+/* ── HEADER ── */
+.header {
+  position: relative;
+  height: 80px;
+  border-bottom: 5px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .rank-box {
   background-color: var(--accent);
-  color: white;
-  width: 80px;
+  color: #ffffff;
+  width: 100px;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 50px;
+  font-size: 55px;
   font-weight: bold;
-  font-family: 'Orbitron', sans-serif;
-  line-height: 1;
-  flex-shrink: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .name-box {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 38px;
-  letter-spacing: 3px;
-  font-family: 'Orbitron', 'Kanit', sans-serif;
+  color: #ffffff;
+  font-size: 42px;
   font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0 12px;
-  min-width: 0;
-}
-.name-box.shrink-1 { font-size: 30px; letter-spacing: 2px; }
-.name-box.shrink-2 { font-size: 24px; letter-spacing: 1px; }
-
-.content {
-  padding: 40px 0;
+  letter-spacing: 5px;
+  text-transform: uppercase;
   text-align: center;
-  color: white;
+  width: 100%;
 }
 
-/* RUSSO ONE — only here */
+/* ── CONTENT ── */
+.content {
+  padding: 7px 0;
+  text-align: center;
+  color: #ffffff;
+}
+
 .distance-value {
-  font-size: 110px;
-  font-weight: 400;
+  font-size: 160px;
+  font-weight: 700;
   line-height: 1;
-  font-family: 'Russo One', sans-serif;
-  letter-spacing: 0.02em;
+  font-family: 'Chakra Petch', sans-serif;
+  letter-spacing: 2px;
 }
 
 .unit {
-  font-size: 45px;
-  margin-left: 10px;
-  font-weight: 400;
-  font-family: 'Russo One', sans-serif;
-  letter-spacing: 0.04em;
+  font-size: 50px;
+  margin-left: 15px;
+  font-weight: 300;
+  font-family: 'Kanit', sans-serif;
 }
 
+/* ── FOOTER ── */
 .footer {
   width: 100%;
-  background-color: #333;
-  position: relative;
+  background-color: transparent;
 }
 
 .labels {
   display: flex;
   justify-content: space-around;
   color: #ffffff;
-  font-size: 18px;
-  padding: 10px 0;
-  font-weight: 300;
+  font-size: 28px;
+  padding: 12px 0;
+  font-weight: 400;
   font-family: 'Orbitron', sans-serif;
 }
 
 .progress-container {
   width: 100%;
-  height: 15px;
-  background-color: #e0e0e0;
+  height: 18px;
+  background-color: #ffffff;
   display: flex;
 }
 
@@ -231,110 +138,78 @@ body.hub-mode { background: #0d0d0d !important; }
   height: 100%;
   background-color: var(--green);
   transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 12px rgba(16,255,73,0.5);
 }
 
 .bottom-accent {
-  height: 10px;
-  background-color: #555;
+  height: 24px;
+  background-color: transparent;
   width: 100%;
 }
 
+/* ── No data ── */
 .no-data {
   position: fixed;
   inset: 0;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Orbitron', sans-serif;
-  font-size: 28px;
+  font-size: 32px;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.3);
 }
-body.runner-mode .no-data { display: flex; }
-body.runner-mode.has-data .no-data { display: none; }
 
-/* Demo mode */
+/* ── Demo mode ── */
 body.demo {
-  background:
-    linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
-    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
-    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%) !important;
-  background-size: 30px 30px !important;
-  background-position: 0 0, 0 15px, 15px -15px, -15px 0px !important;
-  background-color: #0d0d0d !important;
+  background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%) !important;
 }
-body.demo::after {
+body.demo::before {
   content: 'DEMO';
   position: fixed;
   top: 16px; left: 50%;
   transform: translateX(-50%);
   padding: 4px 12px;
-  background: rgba(234,179,8,0.2);
-  border: 1px solid rgba(234,179,8,0.6);
+  background: rgba(0,242,234,0.15);
+  border: 1px solid rgba(0,242,234,0.5);
   border-radius: 3px;
-  color: #FCD34D;
+  color: #00f2ea;
   font-family: 'Orbitron', sans-serif;
   font-size: 12px;
   letter-spacing: 0.18em;
-  font-weight: 700;
   z-index: 1000;
 }
 </style>
 </head>
 <body>
 
-<!-- Hub mode: shown when no ?runner= -->
-<div class="hub">
-  <div class="hub-title">MARATHON OBS DISPLAY</div>
-  <div class="hub-sub">เลือกนักวิ่งที่ต้องการเปิดในแท็บใหม่</div>
+<div class="stage" id="stage" style="display:none;">
+  <div class="card">
 
-  <div class="hub-grid">
-    <a class="hub-btn" data-r="1" style="--btn-c:#FACC15">
-      <div class="hub-btn-num">1</div>
-      <div class="hub-btn-label">RUNNER 1 · YELLOW</div>
-    </a>
-    <a class="hub-btn" data-r="2" style="--btn-c:#EC4899">
-      <div class="hub-btn-num">2</div>
-      <div class="hub-btn-label">RUNNER 2 · PINK</div>
-    </a>
-    <a class="hub-btn" data-r="3" style="--btn-c:#22D3EE">
-      <div class="hub-btn-num">3</div>
-      <div class="hub-btn-label">RUNNER 3 · CYAN</div>
-    </a>
-    <a class="hub-btn" data-r="4" style="--btn-c:#A855F7">
-      <div class="hub-btn-num">4</div>
-      <div class="hub-btn-label">RUNNER 4 · PURPLE</div>
-    </a>
-  </div>
-
-  <div class="hub-info">
-    💡 <b>วิธีใช้กับ OBS:</b> คลิกปุ่ม → จะเปิดแท็บใหม่ → copy URL ของแท็บนั้น → ใส่ใน OBS Browser Source<br>
-    🎬 <b>ทดลองดู:</b> เพิ่ม <code style="color:#fff">?demo=1</code> ท้าย URL จะเห็นนักวิ่งจำลอง
-  </div>
-</div>
-
-<!-- Runner card mode -->
-<div class="card" id="card">
-  <div class="header">
-    <div class="rank-box" id="rank">1</div>
-    <div class="name-box" id="name">RUNNER</div>
-  </div>
-
-  <div class="content">
-    <span class="distance-value" id="distance">0.00</span><span class="unit">KM</span>
-  </div>
-
-  <div class="footer">
-    <div class="labels">
-      <span>10K</span>
-      <span>20K</span>
-      <span>30K</span>
+    <!-- HEADER -->
+    <div class="header">
+      <div class="rank-box" id="numTag">1</div>
+      <div class="name-box" id="nameText">RUNNER</div>
     </div>
-    <div class="progress-container">
-      <div class="progress-bar" id="progressBar"></div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <span class="distance-value" id="kmNum">0.00</span><span class="unit">KM</span>
     </div>
-    <div class="bottom-accent"></div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="labels">
+        <span>10K</span>
+        <span>20K</span>
+        <span>30K</span>
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar" id="barFill"></div>
+      </div>
+      <div class="bottom-accent"></div>
+    </div>
+
   </div>
 </div>
 
@@ -354,88 +229,57 @@ const firebaseConfig = {
   appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
 };
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db  = getDatabase(app);
 
-const params = new URLSearchParams(window.location.search);
-const runnerParam = params.get('runner');
-const isDemo = params.get('demo') === '1';
+const params    = new URLSearchParams(window.location.search);
+const runnerNum = Math.min(4, Math.max(1, parseInt(params.get('runner') || '1')));
+const isDemo    = params.get('demo') === '1';
 
-const COLORS = ['#FACC15', '#EC4899', '#22D3EE', '#A855F7'];
+// Color per runner — accent changes rank-box & header border
+const COLORS = ['#FACC15', '#EC4899', '#00f2ea', '#A855F7'];
+document.documentElement.style.setProperty('--accent', COLORS[runnerNum - 1]);
+document.getElementById('numTag').textContent = runnerNum;
 
-// ── HUB MODE (no runner specified) ──
-if (!runnerParam) {
-  document.body.classList.add('hub-mode');
-  // Wire up hub buttons to open in new tab
-  document.querySelectorAll('.hub-btn').forEach(btn => {
-    const r = btn.dataset.r;
-    const newParams = new URLSearchParams(window.location.search);
-    newParams.set('runner', r);
-    btn.href = window.location.pathname + '?' + newParams.toString();
-    btn.target = '_blank';   // 👉 open in new tab
-    btn.rel = 'noopener';
-  });
-} else {
-  // ── RUNNER MODE ──
-  document.body.classList.add('runner-mode');
-  const runnerNum = Math.min(4, Math.max(1, parseInt(runnerParam)));
+function formatName(name, idx) {
+  if (!name) return 'RUNNER ' + idx;
+  return name.toUpperCase();
+}
 
-  document.documentElement.style.setProperty('--accent', COLORS[runnerNum - 1]);
-  document.getElementById('rank').textContent = runnerNum;
+function render(data) {
+  const km   = data.km   || 0;
+  const goal = data.goal || 42;
+  const name = data.name || ('Runner ' + runnerNum);
+  const pct  = Math.min(100, (km / goal) * 100);
 
-  // Auto-shrink long names
-  function fitName(text) {
-    const el = document.getElementById('name');
-    el.classList.remove('shrink-1', 'shrink-2');
-    el.textContent = text;
-    requestAnimationFrame(() => {
-      if (el.scrollWidth > el.clientWidth) {
-        el.classList.add('shrink-1');
-        requestAnimationFrame(() => {
-          if (el.scrollWidth > el.clientWidth) {
-            el.classList.add('shrink-2');
-          }
-        });
-      }
-    });
-  }
+  document.getElementById('stage').style.display = 'block';
+  document.getElementById('noData').style.display = 'none';
 
-  function render(data) {
-    const km = data.km || 0;
-    const goal = data.goal || 42;
-    const name = (data.name || ('RUNNER ' + runnerNum)).toUpperCase();
-    const pct = Math.min(100, (km / goal) * 100);
+  document.getElementById('nameText').textContent = formatName(name, runnerNum);
+  document.getElementById('kmNum').textContent    = km.toFixed(2);
+  document.getElementById('barFill').style.width  = pct.toFixed(2) + '%';
+}
 
-    document.body.classList.add('has-data');
-    document.getElementById('card').classList.add('show');
-
-    fitName(name);
-    document.getElementById('distance').textContent = km.toFixed(2);
-    document.getElementById('progressBar').style.width = pct.toFixed(2) + '%';
-  }
-
-  if (isDemo) {
-    document.body.classList.add('demo');
-    const demoData = [
-      { name: 'Ronaldo',           goal: 42, km: 10.00, _speed: 0.18 },
-      { name: 'Lionel Messi',      goal: 42, km: 12.67, _speed: 0.32 },
-      { name: 'สมชาย ใจดี',         goal: 10, km: 3.20,  _speed: 0.45 },
-      { name: 'Yuki Tanaka',       goal: 21, km: 5.40,  _speed: 0.55 },
-    ];
-    const r = demoData[runnerNum - 1];
+if (isDemo) {
+  document.body.classList.add('demo');
+  const demoData = [
+    { name: 'Ronaldo',     goal: 42, km: 10.00, _speed: 0.18 },
+    { name: 'John Smith',  goal: 21, km: 5.4,   _speed: 0.32 },
+    { name: 'Yuki Tanaka', goal: 10, km: 3.2,   _speed: 0.45 },
+    { name: 'M.Tengnon',   goal: 42, km: 12.67, _speed: 0.55 },
+  ];
+  const r = demoData[runnerNum - 1];
+  render(r);
+  setInterval(() => {
+    if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
     render(r);
-    setInterval(() => {
-      if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
-      render(r);
-    }, 2000);
-  } else {
-    const key = 'runner' + runnerNum;
-    onValue(ref(db, 'runners/' + key), snap => {
-      const data = snap.val();
-      if (data) render(data);
-    });
-  }
+  }, 2000);
+} else {
+  const key = 'runner' + runnerNum;
+  onValue(ref(db, 'runners/' + key), snap => {
+    const data = snap.val();
+    if (data) render(data);
+  });
 }
 </script>
-
 </body>
 </html>
