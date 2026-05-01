@@ -2,92 +2,389 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>OBS Launcher</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<title>Marathon OBS — Single Runner</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Kanit:wght@300;500&family=Chakra+Petch:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  background: #0a0a0a;
+:root {
+  --c1: #FACC15;
+  --c2: #EC4899;
+  --c3: #00f2ea;
+  --c4: #A855F7;
+  --green: #10ff49;
+  --accent: #00f2ea;
+  --panel-bg: rgba(0,0,0,0.70);
+  --footer-bg: rgba(0,0,0,0.70);
+  --accent-bottom: transparent;
+}
+
+html, body {
+  background: transparent !important;
+  width: 100vw;
   min-height: 100vh;
+  overflow: hidden;
+  font-family: 'Orbitron', sans-serif;
+  color: #ffffff;
+}
+
+/* ── Container — bottom-left ── */
+.stage {
+  position: fixed;
+  left: 60px;
+  bottom: 60px;
+  width: 1000px;
+  opacity: 0;
+  animation: fadeIn 0.6s 0.1s forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── CARD ── */
+.card {
+  width: 100%;
+  background-color: rgba(0,0,0,0.70);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+/* ── HEADER ── */
+.header {
+  position: relative;
+  height: 80px;
+  border-bottom: 5px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rank-box {
+  background-color: var(--accent);
+  color: #ffffff;
+  width: 100px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 55px;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.name-box {
+  color: #ffffff;
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+}
+
+/* ── CONTENT ── */
+.content {
+  padding: 7px 0;
+  text-align: center;
+  color: #ffffff;
+}
+
+.distance-value {
+  font-size: 160px;
+  font-weight: 700;
+  line-height: 1;
+  font-family: 'Chakra Petch', sans-serif;
+  letter-spacing: 2px;
+}
+
+.unit {
+  font-size: 50px;
+  margin-left: 15px;
+  font-weight: 300;
+  font-family: 'Kanit', sans-serif;
+}
+
+/* ── FOOTER ── */
+.footer {
+  width: 100%;
+  background-color: transparent;
+}
+
+.labels {
+  display: flex;
+  justify-content: space-around;
+  color: #ffffff;
+  font-size: 28px;
+  padding: 12px 0;
+  font-weight: 400;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.progress-container {
+  width: 100%;
+  height: 18px;
+  background-color: #ffffff;
+  display: flex;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background-color: var(--green);
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 12px rgba(16,255,73,0.5);
+}
+
+.bottom-accent {
+  height: 24px;
+  background-color: transparent;
+  width: 100%;
+}
+
+/* ── SELECTOR SCREEN ── */
+.selector {
+  position: fixed;
+  inset: 0;
+  background: #080808;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  z-index: 100;
+}
+.selector-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.25em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+}
+.selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.sel-btn {
+  width: 220px;
+  height: 110px;
+  background: #111;
+  border: 1px solid var(--c);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+.sel-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--c);
+}
+.sel-btn:hover { background: rgba(255,255,255,0.05); transform: scale(1.03); }
+.sel-btn:active { transform: scale(0.97); }
+.sel-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--c);
+  line-height: 1;
+}
+.sel-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.35);
+}
+.sel-demo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.15);
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.sel-demo:hover { color: rgba(255,255,255,0.4); }
+.no-data {
+  position: fixed;
+  inset: 0;
+  display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Orbitron', sans-serif;
-  color: #fff;
-  gap: 40px;
+  font-size: 32px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
 }
 
-h1 {
-  font-size: 22px;
-  letter-spacing: 0.2em;
-  color: rgba(255,255,255,0.5);
-  text-transform: uppercase;
+/* ── Demo mode ── */
+body.demo {
+  background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%) !important;
 }
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.btn {
-  width: 260px;
-  height: 120px;
-  border: 2px solid var(--color);
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: background 0.2s, transform 0.1s;
-  text-decoration: none;
-}
-.btn:hover {
-  background: rgba(255,255,255,0.07);
-  transform: scale(1.03);
-}
-.btn:active { transform: scale(0.98); }
-
-.btn .num {
-  font-size: 48px;
-  font-weight: 700;
-  color: var(--color);
-  line-height: 1;
-}
-.btn .label {
-  font-size: 13px;
-  letter-spacing: 0.15em;
-  color: rgba(255,255,255,0.5);
+body.demo::before {
+  content: 'DEMO';
+  position: fixed;
+  top: 16px; left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  background: rgba(0,242,234,0.15);
+  border: 1px solid rgba(0,242,234,0.5);
+  border-radius: 3px;
+  color: #00f2ea;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  z-index: 1000;
 }
 </style>
 </head>
 <body>
 
-<h1>OBS Display — เลือก Runner</h1>
+<div class="stage" id="stage" style="display:none;">
+  <div class="card">
 
-<div class="grid">
-  <a class="btn" style="--color:#FACC15" href="obs_display.html?runner=1" target="_blank">
-    <span class="num">1</span>
-    <span class="label">RUNNER 1</span>
-  </a>
-  <a class="btn" style="--color:#EC4899" href="obs_display.html?runner=2" target="_blank">
-    <span class="num">2</span>
-    <span class="label">RUNNER 2</span>
-  </a>
-  <a class="btn" style="--color:#00f2ea" href="obs_display.html?runner=3" target="_blank">
-    <span class="num">3</span>
-    <span class="label">RUNNER 3</span>
-  </a>
-  <a class="btn" style="--color:#A855F7" href="obs_display.html?runner=4" target="_blank">
-    <span class="num">4</span>
-    <span class="label">RUNNER 4</span>
-  </a>
+    <!-- HEADER -->
+    <div class="header">
+      <div class="rank-box" id="numTag">1</div>
+      <div class="name-box" id="nameText">RUNNER</div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <span class="distance-value" id="kmNum">0.00</span><span class="unit">KM</span>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="labels">
+        <span>10K</span>
+        <span>20K</span>
+        <span>30K</span>
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar" id="barFill"></div>
+      </div>
+      <div class="bottom-accent"></div>
+    </div>
+
+  </div>
 </div>
 
+<div class="selector" id="selector" style="display:none;">
+  <div class="selector-title">OBS Display — เลือก Runner</div>
+  <div class="selector-grid">
+    <a class="sel-btn" style="--c:#FACC15" href="?runner=1" target="_blank">
+      <span class="sel-num">1</span>
+      <span class="sel-label">RUNNER 1</span>
+    </a>
+    <a class="sel-btn" style="--c:#EC4899" href="?runner=2" target="_blank">
+      <span class="sel-num">2</span>
+      <span class="sel-label">RUNNER 2</span>
+    </a>
+    <a class="sel-btn" style="--c:#00f2ea" href="?runner=3" target="_blank">
+      <span class="sel-num">3</span>
+      <span class="sel-label">RUNNER 3</span>
+    </a>
+    <a class="sel-btn" style="--c:#A855F7" href="?runner=4" target="_blank">
+      <span class="sel-num">4</span>
+      <span class="sel-label">RUNNER 4</span>
+    </a>
+  </div>
+  <button class="sel-demo" onclick="location.href='?runner=1&demo=1'" >▶ DEMO MODE (Runner 1)</button>
+</div>
+
+<div class="no-data" id="noData">WAITING FOR DATA…</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB9RxP_jFuecXLyT7szJMnQYywIeVuqk34",
+  authDomain: "marathon-tracker-f7e06.firebaseapp.com",
+  databaseURL: "https://marathon-tracker-f7e06-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "marathon-tracker-f7e06",
+  storageBucket: "marathon-tracker-f7e06.firebasestorage.app",
+  messagingSenderId: "217799472779",
+  appId: "1:217799472779:web:0cb0a05d3768059de5c68e",
+};
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+const params    = new URLSearchParams(window.location.search);
+const runnerParam = params.get('runner');
+const isDemo    = params.get('demo') === '1';
+
+// No runner param → show selector
+if (!runnerParam) {
+  document.getElementById('selector').style.display = 'flex';
+  document.getElementById('noData').style.display = 'none';
+  throw new Error('selector mode');
+}
+
+const runnerNum = Math.min(4, Math.max(1, parseInt(runnerParam)));
+
+// Color per runner — accent changes rank-box & header border
+const COLORS = ['#FACC15', '#EC4899', '#00f2ea', '#A855F7'];
+document.documentElement.style.setProperty('--accent', COLORS[runnerNum - 1]);
+document.getElementById('numTag').textContent = runnerNum;
+
+function formatName(name, idx) {
+  if (!name) return 'RUNNER ' + idx;
+  return name.toUpperCase();
+}
+
+function render(data) {
+  const km   = data.km   || 0;
+  const goal = data.goal || 42;
+  const name = data.name || ('Runner ' + runnerNum);
+  const pct  = Math.min(100, (km / goal) * 100);
+
+  document.getElementById('stage').style.display = 'block';
+  document.getElementById('noData').style.display = 'none';
+
+  document.getElementById('nameText').textContent = formatName(name, runnerNum);
+  document.getElementById('kmNum').textContent    = km.toFixed(2);
+  document.getElementById('barFill').style.width  = pct.toFixed(2) + '%';
+}
+
+if (isDemo) {
+  document.body.classList.add('demo');
+  const demoData = [
+    { name: 'Ronaldo',     goal: 42, km: 10.00, _speed: 0.18 },
+    { name: 'John Smith',  goal: 21, km: 5.4,   _speed: 0.32 },
+    { name: 'Yuki Tanaka', goal: 10, km: 3.2,   _speed: 0.45 },
+    { name: 'M.Tengnon',   goal: 42, km: 12.67, _speed: 0.55 },
+  ];
+  const r = demoData[runnerNum - 1];
+  render(r);
+  setInterval(() => {
+    if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
+    render(r);
+  }, 2000);
+} else {
+  const key = 'runner' + runnerNum;
+  onValue(ref(db, 'runners/' + key), snap => {
+    const data = snap.val();
+    if (data) render(data);
+  });
+}
+</script>
 </body>
 </html>
