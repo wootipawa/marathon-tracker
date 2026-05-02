@@ -278,13 +278,12 @@ window.startTracking = async function() {
     err.style.display = 'block'; return;
   }
 
-  // Read name + goal from Firebase (set by admin)
+  // Read name + goal + existing km from Firebase (set by admin)
   const snap = await get(ref(db, 'runners/'+key));
   const existing = snap.val() || {};
   const name = existing.name || ('นักวิ่ง ' + key.slice(-1));
   currentGoal = existing.goal || 42;
-
-  await set(ref(db, 'runners/'+key+'/km'), 0);
+  totalKm = existing.km || 0; // ← บวกต่อจากค่าเดิม ไม่ reset
 
   document.getElementById('btnStart').style.display = 'none';
   document.getElementById('btnStop').style.display  = 'block';
