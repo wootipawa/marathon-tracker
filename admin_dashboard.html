@@ -61,6 +61,68 @@ body {
 }
 @keyframes bl { 0%,100%{opacity:1} 50%{opacity:.2} }
 
+/* ── MINIMAP SECTION ── */
+.minimap-section {
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 3px solid #FFDD00;
+  padding: 18px;
+  margin-bottom: 24px;
+}
+.minimap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.minimap-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.minimap-meta {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: #FFDD00;
+}
+.minimap-wrap {
+  background: #0a0a0a;
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 12px;
+  border-radius: 4px;
+}
+svg.race-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+}
+.route-shape {
+  fill: #FFDD00;
+  filter: drop-shadow(0 0 6px rgba(255, 221, 0, 0.3));
+}
+.start-finish-line { fill: #fff; }
+
+.runner-dot {
+  transition: transform 1.5s cubic-bezier(.4,0,.2,1);
+}
+.runner-dot circle {
+  stroke: #fff;
+  stroke-width: 4;
+  filter: drop-shadow(0 0 12px var(--rdot));
+}
+.runner-dot text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  fill: #000;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
 /* ── GRID ── */
 .grid {
   display: grid;
@@ -285,6 +347,73 @@ body {
   </div>
 </div>
 
+<!-- ╔════════════════════════════════════╗ -->
+<!-- ║       NEW: MINIMAP SECTION        ║ -->
+<!-- ╚════════════════════════════════════╝ -->
+<div class="minimap-section">
+  <div class="minimap-header">
+    <div class="minimap-title">🗺️ Race Map · Live Tracking</div>
+    <div class="minimap-meta">BANGSAEN42 · 42.195 KM</div>
+  </div>
+  <div class="minimap-wrap">
+    <svg class="race-map" viewBox="0 0 1728 1296" xmlns="http://www.w3.org/2000/svg">
+      <path id="roadShape" class="route-shape" d="M323.78,1055.27c-23.9-10.73-46.38-22.55-68.16-35.57c-16.9-10.11-30.84-23.53-39.01-41.93
+        c-18.07-40.72-29.07-83.94-43.86-125.83c-5.81-16.44-12.58-32.65-13.7-50.66c-1.01-16.25,6.7-27.02,18.53-35.69
+        c9.73-7.13,18.34-15.47,27.07-23.63c8.46-7.92,11.68-17.24,7.44-29.63c-10.83-31.62-19.51-63.98-30.74-95.45
+        c-6.11-17.1-11.78-33.72-11.44-52.17c0.18-9.75,3.88-16.47,11.02-22.73c18.55-16.26,41.25-23.97,63.75-32.1
+        c13.91-5.03,27.95-9.72,42.09-14.03c30.36-9.27,45.55,1.01,59.96,22.26c16.51,24.35,25.24,52.66,35.93,79.89
+        c6.96,17.72,13.21,35.76,21.05,53.08c5.88,12.99,16.21,20.49,31.13,16.35c31.57-8.76,63.5-16.57,93.47-29.82
+        c20.77-9.18,35.74-25.21,45.6-46.55c11.96-25.9,23.98-51.81,37.12-77.21c16.5-31.91,30.83-64.94,46.01-97.52
+        c5.55-11.9,12.55-22.96,21.24-32.66c9.64-10.76,23.1-10.56,33.78-0.87c8.67,7.87,13.77,17.69,16.8,28.88
+        c8.01,29.55,16.39,59.01,24.23,88.6c2.67,10.07,8.46,17.55,17.74,20.99c18.14,6.72,36.94,11.67,55.02,18.51
+        c15.44,5.84,28.98,0.88,42.75-4.74c18.26-7.45,36.37-15.88,56.13-18.02c31.5-3.41,62.71-3.39,90.59,15.5
+        c7.64,5.17,16.1,8.64,24.91,11.49c8.81,2.84,15.5,0.29,20-7.21c13.99-23.33,32.47-42.51,54.26-58.43
+        c8.49-6.21,18.86-9.35,28.88-12.41c37.71-11.52,75.2-23.83,113.54-33.24c8.43-2.07,17.12-4.49,24.1-10.38
+        c13.5-11.38,7.04-24.88,2.7-37.04c-8.8-24.61-16-49.72-24.41-74.42c-7.26-21.32-14.65-42.59-21.55-64.05
+        c-10.86-33.75,5.17-68.52,38.97-80.29c42.93-14.94,86.47-28.14,129.74-42.14c9.38-3.04,18.79-6.02,28.04-9.44
+        c28.34-10.46,57.6-8.84,83.67,2.99c25.68,11.65,50.87,25.27,75.67,39.18c8.61,4.83,18.7,6.05,26.56,13.2
+        c11.65,10.6,12.04,25.58-0.23,34.14c-6.92,4.83-13.33,2.91-19.89-0.32c-31.97-15.75-63.81-31.8-95.96-47.18
+        c-17.28-8.27-35.65-7.84-53.72-2.84c-14.38,3.98-28.62,10.72-42.44,13.8c-26.16,5.83-50.34,17-76.16,23.29
+        c-15.29,3.73-30.7,8.13-44.77,15.83c-10.73,5.88-14.91,15.76-11.08,27.35c16.62,50.21,34.02,100.18,49.76,150.67
+        c11.31,36.28-3.4,65.93-38.18,79.51c-35.76,13.95-72.37,26.01-109.21,36.84c-32.97,9.69-56.71,29.92-76.63,56.75
+        c-15.75,21.22-31.43,42.79-49.67,61.77c-19.57,20.35-45.08,27.78-72.94,19.31c-31.35-9.53-62.09-21.07-93.48-30.46
+        c-34.06-10.18-66.85-24.16-101.29-33.16c-9.11-2.38-17.01-0.82-23.48,5.52c-6.29,6.15-5.87,14.27-3.36,21.88
+        c23.01,69.63,46.23,139.2,69.34,208.8c18.09,54.48,36.18,108.97,54.13,163.5c3.79,11.51-3.88,28.09-16.28,33.47
+        c-11.62,5.03-23.8,8.81-35.89,12.68c-51.94,16.64-103.93,33.12-155.91,49.65c-41.63,13.24-83.28,26.44-124.89,39.76
+        c-13.76,4.4-27.32,9.42-41.14,13.62c-18.48,5.63-35.72,4.72-54.01-4.4c-41.31-20.6-81.34-43.82-124-61.72
+        C327.4,1057.73,325.97,1056.61,323.78,1055.27z M1588.49,168.18c-24.3-8.87-45.6-23.83-69.3-33.99
+        c-29.17-12.51-58.02-14.4-88.49-3.61c-21.87,7.74-44.2,14.37-66.22,21.84c-29.28,9.93-59.63,16.86-87.96,29.42
+        c-23.8,10.55-33.19,30.59-27.41,55.42c4.78,20.52,12.47,40.37,19.04,60.46c10.31,31.49,21.22,62.79,30.99,94.44
+        c6.74,21.83-1.32,41.01-18.88,46.83c-19.99,6.63-40.18,12.69-60.4,18.63c-19.28,5.66-38.84,10.38-58.02,16.35
+        c-23.47,7.31-44.73,18.48-62.89,35.76c-10.71,10.2-17.96,22.57-26.43,34.23c-13.05,17.97-22.74,20.59-42.41,11.26
+        c-10.52-4.99-20.83-10.43-31.35-15.44c-25.09-11.96-51.78-15.12-78.35-8.68c-20.4,4.94-39.92,13.79-59.55,21.61
+        c-13.16,5.24-26.16,5.04-39.21,1c-16.84-5.22-33.41-11.32-50.25-16.53c-17.06-5.28-27.38-16.37-31.8-33.57
+        c-5.19-20.16-10.7-40.24-16.18-60.32c-4-14.64-7.93-29.38-15.24-42.78c-6.3-11.56-17.88-11.96-25.38-1.28
+        c-1.82,2.58-3.29,5.44-4.68,8.29c-14.55,29.77-29.06,59.55-43.56,89.34c-14.2,29.18-29.87,57.75-42.21,87.7
+        c-15.86,38.51-41.69,64.08-82.08,75.31c-24.76,6.88-49.01,15.61-73.62,23.06c-10.2,3.09-22.2,4.89-29.97-2.74
+        c-8.84-8.68-15.39-19.93-19.8-32.19c-13.48-37.5-27.24-74.96-44.94-110.72c-14.61-29.52-26.83-34.79-57.49-25.93
+        c-26.09,7.54-51.92,15.95-75.99,28.84c-20.15,10.79-30.65,20.21-22.06,48.07c12.24,39.72,25.8,78.99,38.4,118.57
+        c5.58,17.52,1.8,31.51-9.88,44.82c-9.67,11.01-22.19,18.49-32.88,28.2c-3.21,2.92-6.3,5.7-7.6,9.91c-3.66,11.84-1.8,23.1,2.26,34.7
+        c14.21,40.6,27.72,81.45,41.62,122.17c9.24,27.09,23.01,50.94,49.56,64.59c32.27,16.58,64.78,32.71,97.21,48.98
+        c35.61,17.86,71.27,35.63,106.88,53.48c5.69,2.85,11.29,3.01,17.37,1.09c41.98-13.22,84.01-26.29,126.05-39.35
+        c18.47-5.74,37.55-9.94,55.35-17.3c31.7-13.11,65.13-20.61,97.33-32.15c28.45-10.2,57.78-18.22,86.53-27.81
+        c10.96-3.66,15.15-11.31,12.24-22.23c-2.63-9.86-5.71-19.62-8.98-29.29c-20.9-61.75-42.04-123.43-62.83-185.22
+        c-17.11-50.83-33.99-101.75-50.6-152.74c-3.08-9.46-3.46-19.55,1.01-28.93c7.55-15.84,24.82-23.04,44.38-17.25
+        c24.66,7.31,48.98,15.77,73.43,23.81c40.85,13.43,81.51,27.5,122.6,40.15c23.84,7.34,44.7-2.03,59.95-19.67
+        c19.56-22.62,36.89-47.17,56.02-70.28c16.76-20.24,36.28-35.13,60.93-43.44c39.39-13.27,78.8-26.53,118.32-39.41
+        c22.28-7.26,43.3-36,33.27-62.3c-3.63-9.51-6.86-19.19-9.97-28.88c-13.58-42.26-27.35-84.46-40.44-126.86
+        c-5.75-18.61,4.02-37.5,21.99-43.62c23.34-7.95,46.97-15.04,70.37-22.83c24.43-8.13,49.14-15.35,73.54-23.61
+        c26.4-8.94,53.64-12.63,80.53-0.98c11.31,4.9,22.26,10.63,33.28,16.17c20.12,10.12,40.18,20.38,60.25,30.61
+        c4,2.04,8.42,3.82,11.21-0.93c2.96-5.03-1.35-7.71-5.05-9.92C1603.38,176.52,1596.61,172.75,1588.49,168.18z"/>
+      <path id="centerPath" fill="none" stroke="none"/>
+      <rect x="170.44" y="893.64" transform="matrix(0.9505 -0.3107 0.3107 0.9505 -269.0861 104.7437)"
+            class="start-finish-line" width="47.5" height="6.5"/>
+      <g id="mapRunners"></g>
+    </svg>
+  </div>
+</div>
+<!-- END MINIMAP SECTION -->
+
 <div class="grid" id="grid"></div>
 
 <div class="section-title">ประวัติการอัปเดต</div>
@@ -314,6 +443,125 @@ const PALETTE = [
 ];
 const DEFAULT_COLORS = ['#FACC15','#EC4899','#22D3EE','#A855F7'];
 
+// ╔══════════════════════════════════════╗
+// ║   BUILD CENTERLINE FROM ROAD         ║
+// ╚══════════════════════════════════════╝
+const ns = 'http://www.w3.org/2000/svg';
+const svgEl = document.querySelector('svg.race-map');
+const roadEl = document.getElementById('roadShape');
+const dAttr = roadEl.getAttribute('d');
+
+function splitSubPaths(d) {
+  return d.split(/(?=[Mm])/).filter(s => s.trim().length > 0);
+}
+function samplePath(pathEl, n) {
+  const total = pathEl.getTotalLength();
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const len = (i / (n - 1)) * total;
+    const pt = pathEl.getPointAtLength(len);
+    pts.push({ x: pt.x, y: pt.y });
+  }
+  return pts;
+}
+function dist2(a, b) { const dx = a.x - b.x, dy = a.y - b.y; return dx*dx + dy*dy; }
+function nearestIdx(pt, list) {
+  let best = 0, bd = Infinity;
+  for (let i = 0; i < list.length; i++) {
+    const d = dist2(pt, list[i]);
+    if (d < bd) { bd = d; best = i; }
+  }
+  return best;
+}
+function ptsToPath(pts) {
+  if (pts.length === 0) return '';
+  let d = `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+  for (let i = 1; i < pts.length; i++) {
+    d += ` L ${pts[i].x.toFixed(1)},${pts[i].y.toFixed(1)}`;
+  }
+  return d;
+}
+
+const subs = splitSubPaths(dAttr);
+const subPathEls = subs.map(d => {
+  const p = document.createElementNS(ns, 'path');
+  p.setAttribute('d', d);
+  p.setAttribute('fill', 'none');
+  p.style.display = 'none';
+  svgEl.appendChild(p);
+  return p;
+});
+
+const N = 600;
+const outerPts = samplePath(subPathEls[0], N);
+const innerPts = subPathEls[1] ? samplePath(subPathEls[1], N) : [];
+
+let centerPts = [];
+if (innerPts.length > 0) {
+  for (let i = 0; i < outerPts.length; i++) {
+    const o = outerPts[i];
+    const j = nearestIdx(o, innerPts);
+    const inn = innerPts[j];
+    centerPts.push({ x: (o.x + inn.x) / 2, y: (o.y + inn.y) / 2 });
+  }
+}
+
+// Reverse so runners go DOWN first from start
+centerPts.reverse();
+
+// Find start position (white bar) and rotate array to start there
+const START_TARGET = { x: 194, y: 897 };
+let bestIdx = 0, bestD = Infinity;
+for (let i = 0; i < centerPts.length; i++) {
+  const d = dist2(centerPts[i], START_TARGET);
+  if (d < bestD) { bestD = d; bestIdx = i; }
+}
+const rotated = centerPts.slice(bestIdx).concat(centerPts.slice(0, bestIdx));
+rotated.push(rotated[0]); // close loop
+
+const centerPath = document.getElementById('centerPath');
+centerPath.setAttribute('d', ptsToPath(rotated));
+const totalLength = centerPath.getTotalLength();
+
+const TOTAL_KM = 42.195;
+function kmToPoint(km) {
+  const clamped = Math.min(TOTAL_KM, Math.max(0, km));
+  return centerPath.getPointAtLength((clamped / TOTAL_KM) * totalLength);
+}
+
+// Create 4 map runner dots
+const mapRunnersGroup = document.getElementById('mapRunners');
+function ensureMapDot(idx, color) {
+  let dot = document.getElementById('mapDot-' + idx);
+  if (!dot) {
+    dot = document.createElementNS(ns, 'g');
+    dot.classList.add('runner-dot');
+    dot.id = 'mapDot-' + idx;
+    dot.innerHTML = `
+      <circle r="28" fill="${color}"/>
+      <text>${idx+1}</text>
+    `;
+    mapRunnersGroup.appendChild(dot);
+  } else {
+    dot.querySelector('circle').setAttribute('fill', color);
+  }
+  dot.style.setProperty('--rdot', color);
+  return dot;
+}
+
+function updateMapDot(idx, km, color, goal) {
+  // Scale km to TOTAL_KM if goal != 42.195 (for shorter race goals)
+  // Actually use km directly since centerline = 42.195 km
+  // But cap at goal so dot doesn't go past their target
+  const displayKm = Math.min(km, goal);
+  const pt = kmToPoint(displayKm);
+  const dot = ensureMapDot(idx, color);
+  dot.setAttribute('transform', `translate(${pt.x}, ${pt.y})`);
+}
+
+// ╔══════════════════════════════════════╗
+// ║      ORIGINAL ADMIN LOGIC            ║
+// ╚══════════════════════════════════════╝
 const logs = [];
 function addLog(msg) {
   const t = new Date().toLocaleTimeString('th-TH');
@@ -465,6 +713,12 @@ onValue(ref(db, 'runners'), snap => {
     }
     prevKm[key] = r.km || 0;
     html += renderCard(key, r, i);
+
+    // 🆕 Update map dot
+    const color = r.color || DEFAULT_COLORS[i];
+    const km = r.km || 0;
+    const goal = r.goal || 42;
+    updateMapDot(i, km, color, goal);
   }
   document.getElementById('grid').innerHTML = html;
   document.getElementById('connStatus').textContent = 'เชื่อมต่อ Firebase · อัปเดตอัตโนมัติ';
