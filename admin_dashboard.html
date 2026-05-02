@@ -67,7 +67,8 @@ svg.race-map { display: block; width: 100%; height: auto; max-height: 500px; }
 .gps-badge.offline { color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.1); }
 .gps-badge .bdot { width: 5px; height: 5px; border-radius: 50%; }
 .gps-badge.online .bdot { background: #4ade80; animation: bl 1.4s infinite; }
-.gps-badge.offline .bdot { background: rgba(255,255,255,0.2); } font-family: 'Orbitron', sans-serif; font-size: 11px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+.gps-badge.offline .bdot { background: rgba(255,255,255,0.2); }
+.section-title { font-family: 'Orbitron', sans-serif; font-size: 11px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
 .log-box { background: #111; border: 1px solid rgba(255,255,255,0.06); padding: 12px 16px; font-size: 12px; color: rgba(255,255,255,0.4); line-height: 2; max-height: 160px; overflow-y: auto; font-family: monospace; }
 .log-entry { border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 2px; }
 .log-entry:last-child { border-bottom: none; }
@@ -178,12 +179,14 @@ window.toggleColor=function(key){document.getElementById('colorPanel_'+key).clas
 
 window._cur={};
 
+function isOnline(data){return data && data.lastSeen && (Date.now() - data.lastSeen) < 15000;}
+
 function renderCard(key,data,idx){
   const km=data.km||0,goal=data.goal||42,name=data.name||('นักวิ่ง '+(idx+1)),color=data.color||DEFAULT_COLORS[idx];
   const pct=Math.min(100,(km/goal)*100),acc=data.acc?'±'+data.acc+'ม.':'—';
   const swatches=PALETTE.map(c=>`<div class="color-swatch ${c.toLowerCase()===color.toLowerCase()?'active':''}" style="background:${c}" onclick="setColor('${key}','${c}')" title="${c}"></div>`).join('');
-  const online = data.lastSeen && (Date.now() - data.lastSeen) < 15000;
-  const badge = `<div class="gps-badge ${online?'online':'offline'}"><span class="bdot"></span>${online?'LIVE':'OFFLINE'}</div>`;
+  const online = isOnline(data);
+  const badge = `<div class="gps-badge ${online?'online':'offline'}" id="gpsBadge_${key}"><span class="bdot"></span><span class="btext">${online?'LIVE':'OFFLINE'}</span></div>`;
 
   return `
   <div class="runner-card" style="--card-color:${color}">
@@ -247,16 +250,21 @@ onValue(ref(db,'runners'),snap=>{
   document.getElementById('connStatus').textContent='เชื่อมต่อ Firebase · อัปเดตอัตโนมัติ';
 });
 
-// Refresh cards ทุก 10 วินาที เพื่ออัปเดต online/offline badge
+// Update only the badges (not whole grid) every 3 seconds
+// — preserves user input + open color panels
 setInterval(() => {
   const data = window._cur || {};
-  let html = '';
   for (let i = 0; i < 4; i++) {
     const key = 'runner'+(i+1);
-    html += renderCard(key, data[key]||{}, i);
+    const badge = document.getElementById('gpsBadge_'+key);
+    if (!badge) continue;
+    const online = isOnline(data[key]);
+    badge.classList.toggle('online', online);
+    badge.classList.toggle('offline', !online);
+    const txt = badge.querySelector('.btext');
+    if (txt) txt.textContent = online ? 'LIVE' : 'OFFLINE';
   }
-  document.getElementById('grid').innerHTML = html;
-}, 10000);
+}, 3000);
 </script>
 </body>
 </html>
