@@ -9,10 +9,10 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --c1: #FACC15;   /* Yellow */
-  --c2: #EC4899;   /* Pink */
-  --c3: #22D3EE;   /* Cyan */
-  --c4: #A855F7;   /* Purple */
+  --c1: #FACC15;
+  --c2: #EC4899;
+  --c3: #22D3EE;
+  --c4: #A855F7;
   --green: #10ff49;
   --accent: var(--c1);
 }
@@ -25,7 +25,6 @@ html, body {
   font-family: 'Orbitron', sans-serif;
 }
 
-/* ── HUB MODE: when no ?runner= is set, show big picker ── */
 .hub {
   display: none;
   min-height: 100vh;
@@ -84,7 +83,7 @@ body.hub-mode { background: #0d0d0d !important; }
   color: #fff;
   font-family: 'Russo One', sans-serif;
   overflow: hidden;
-  transition: all 0.2s;
+  transition: all 0.3s, border-color 0.3s;
 }
 .hub-btn:hover {
   transform: translateY(-3px);
@@ -97,6 +96,7 @@ body.hub-mode { background: #0d0d0d !important; }
   padding: 20px 0;
   text-align: center;
   line-height: 1;
+  transition: background 0.3s;
 }
 .hub-btn-label {
   padding: 14px 16px;
@@ -104,6 +104,15 @@ body.hub-mode { background: #0d0d0d !important; }
   letter-spacing: 0.15em;
   text-align: center;
   color: var(--btn-c);
+  transition: color 0.3s;
+}
+.hub-btn-runnername {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.5);
+  margin-top: 4px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 400;
 }
 
 .hub-info {
@@ -121,7 +130,6 @@ body.hub-mode { background: #0d0d0d !important; }
 }
 .hub-info b { color: var(--green); }
 
-/* ── Card (when ?runner= is set) ── */
 .card {
   position: fixed;
   left: 0;
@@ -186,7 +194,6 @@ body.hub-mode { background: #0d0d0d !important; }
   color: white;
 }
 
-/* RUSSO ONE — only here */
 .distance-value {
   font-size: 110px;
   font-weight: 400;
@@ -253,7 +260,6 @@ body.hub-mode { background: #0d0d0d !important; }
 body.runner-mode .no-data { display: flex; }
 body.runner-mode.has-data .no-data { display: none; }
 
-/* Demo mode */
 body.demo {
   background:
     linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
@@ -284,7 +290,6 @@ body.demo::after {
 </head>
 <body>
 
-<!-- Hub mode: shown when no ?runner= -->
 <div class="hub">
   <div class="hub-title">MARATHON OBS DISPLAY</div>
   <div class="hub-sub">เลือกนักวิ่งที่ต้องการเปิดในแท็บใหม่</div>
@@ -292,19 +297,31 @@ body.demo::after {
   <div class="hub-grid">
     <a class="hub-btn" data-r="1" style="--btn-c:#FACC15">
       <div class="hub-btn-num">1</div>
-      <div class="hub-btn-label">RUNNER 1 · YELLOW</div>
+      <div class="hub-btn-label">
+        <div>RUNNER 1</div>
+        <div class="hub-btn-runnername" id="hubName1">—</div>
+      </div>
     </a>
     <a class="hub-btn" data-r="2" style="--btn-c:#EC4899">
       <div class="hub-btn-num">2</div>
-      <div class="hub-btn-label">RUNNER 2 · PINK</div>
+      <div class="hub-btn-label">
+        <div>RUNNER 2</div>
+        <div class="hub-btn-runnername" id="hubName2">—</div>
+      </div>
     </a>
     <a class="hub-btn" data-r="3" style="--btn-c:#22D3EE">
       <div class="hub-btn-num">3</div>
-      <div class="hub-btn-label">RUNNER 3 · CYAN</div>
+      <div class="hub-btn-label">
+        <div>RUNNER 3</div>
+        <div class="hub-btn-runnername" id="hubName3">—</div>
+      </div>
     </a>
     <a class="hub-btn" data-r="4" style="--btn-c:#A855F7">
       <div class="hub-btn-num">4</div>
-      <div class="hub-btn-label">RUNNER 4 · PURPLE</div>
+      <div class="hub-btn-label">
+        <div>RUNNER 4</div>
+        <div class="hub-btn-runnername" id="hubName4">—</div>
+      </div>
     </a>
   </div>
 
@@ -314,7 +331,6 @@ body.demo::after {
   </div>
 </div>
 
-<!-- Runner card mode -->
 <div class="card" id="card">
   <div class="header">
     <div class="rank-box" id="rank">1</div>
@@ -362,18 +378,34 @@ const isDemo = params.get('demo') === '1';
 
 const COLORS = ['#FACC15', '#EC4899', '#22D3EE', '#A855F7'];
 
-// ── HUB MODE (no runner specified) ──
 if (!runnerParam) {
+  // ── HUB MODE ──
   document.body.classList.add('hub-mode');
+
   // Wire up hub buttons to open in new tab
   document.querySelectorAll('.hub-btn').forEach(btn => {
     const r = btn.dataset.r;
     const newParams = new URLSearchParams(window.location.search);
     newParams.set('runner', r);
     btn.href = window.location.pathname + '?' + newParams.toString();
-    btn.target = '_blank';   // 👉 open in new tab
+    btn.target = '_blank';
     btn.rel = 'noopener';
   });
+
+  // 🆕 Subscribe to Firebase to update hub button colors + names live
+  onValue(ref(db, 'runners'), snap => {
+    const data = snap.val() || {};
+    for (let i = 1; i <= 4; i++) {
+      const r = data['runner' + i] || {};
+      const color = r.color || COLORS[i - 1];
+      const name = r.name || '';
+      const btn = document.querySelector(`.hub-btn[data-r="${i}"]`);
+      if (btn) btn.style.setProperty('--btn-c', color);
+      const nameEl = document.getElementById('hubName' + i);
+      if (nameEl) nameEl.textContent = name ? name.toUpperCase() : '—';
+    }
+  });
+
 } else {
   // ── RUNNER MODE ──
   document.body.classList.add('runner-mode');
@@ -382,7 +414,6 @@ if (!runnerParam) {
   document.documentElement.style.setProperty('--accent', COLORS[runnerNum - 1]);
   document.getElementById('rank').textContent = runnerNum;
 
-  // Auto-shrink long names
   function fitName(text) {
     const el = document.getElementById('name');
     el.classList.remove('shrink-1', 'shrink-2');
@@ -405,7 +436,6 @@ if (!runnerParam) {
     const name = (data.name || ('RUNNER ' + runnerNum)).toUpperCase();
     const pct = Math.min(100, (km / goal) * 100);
 
-    // Use color from Firebase if available, else default
     const color = data.color || COLORS[runnerNum - 1];
     document.documentElement.style.setProperty('--accent', color);
 
