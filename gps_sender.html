@@ -323,7 +323,8 @@ async function updateFromPos(pos, key, name) {
     goal: currentGoal,
     km: parseFloat(km.toFixed(3)),
     lat, lng,
-    acc: Math.round(acc)
+    acc: Math.round(acc),
+    lastSeen: Date.now(),
   });
 
   document.getElementById('stStatus').textContent = 'SENDING';
