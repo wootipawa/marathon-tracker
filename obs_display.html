@@ -97,7 +97,7 @@ body.map-mode .map-stage { display: flex; }
 body.map-mode { overflow: hidden; }
 
 svg.race-map { display: block; width: 100%; height: 100%; max-width: 100vw; max-height: 100vh; }
-.route-shape { fill: none; stroke: #FF820D; stroke-width: 18; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 8px rgba(255,130,13,0.5)); }
+.route-shape { fill: none; stroke: #ffffff; stroke-width: 18; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
 .start-finish-line { stroke: #fff; stroke-width: 6; }
 .runner-dot { transition: transform 1.5s cubic-bezier(.4,0,.2,1); }
 .runner-dot circle { stroke: #fff; stroke-width: 4; filter: drop-shadow(0 0 12px var(--rdot)); }
@@ -204,6 +204,9 @@ const isDemo = params.get('demo') === '1';
 
 const COLORS = ['#FACC15', '#EC4899', '#22D3EE', '#A855F7'];
 
+// ── เปลี่ยนเป็น true เพื่อแสดงนักวิ่ง 2,3,4 บน map ──
+const SHOW_ALL_RUNNERS = false;
+
 // ════════════════════════════════════════
 //   ROUTE 1: HUB MODE
 // ════════════════════════════════════════
@@ -247,7 +250,6 @@ else if (isMap) {
   if (isDemo) document.body.classList.add('demo');
 
   const ns = 'http://www.w3.org/2000/svg';
-  const svgEl = document.querySelector('svg.race-map');
   const roadEl = document.getElementById('roadShape');
 
   function samplePath(pathEl, n) {
@@ -268,8 +270,6 @@ else if (isMap) {
 
   const N = 600;
   const pts = samplePath(roadEl, N);
-
-  // หาจุดเริ่มต้นใกล้ finish line
   const START_TARGET = { x: 1011, y: 925 };
   let bestIdx = 0, bestD = Infinity;
   for (let i = 0; i < pts.length; i++) {
@@ -308,6 +308,10 @@ else if (isMap) {
     const dot = ensureMapDot(idx, color);
     dot.setAttribute('transform', `translate(${pt.x},${pt.y})`);
   }
+  function hideMapDot(idx) {
+    const dot = document.getElementById('mapDot-' + idx);
+    if (dot) dot.style.display = 'none';
+  }
 
   if (isDemo) {
     const demoData = [
@@ -316,20 +320,35 @@ else if (isMap) {
       { km: 5, color: '#22D3EE', goal: 10, _speed: 0.15 },
       { km: 7, color: '#A855F7', goal: 10, _speed: 0.18 },
     ];
-    for (let i = 0; i < 4; i++) updateMapDot(i, demoData[i].km, demoData[i].color, demoData[i].goal);
-    setInterval(() => {
-      for (let i = 0; i < 4; i++) {
-        const r = demoData[i];
+
+    if (SHOW_ALL_RUNNERS) {
+      for (let i = 0; i < 4; i++) updateMapDot(i, demoData[i].km, demoData[i].color, demoData[i].goal);
+      setInterval(() => {
+        for (let i = 0; i < 4; i++) {
+          const r = demoData[i];
+          if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
+          updateMapDot(i, r.km, r.color, r.goal);
+        }
+      }, 2000);
+    } else {
+      // แสดงแค่นักวิ่ง 1
+      updateMapDot(0, demoData[0].km, demoData[0].color, demoData[0].goal);
+      setInterval(() => {
+        const r = demoData[0];
         if (r.km < r.goal) r.km = Math.min(r.goal, r.km + r._speed * (0.7 + Math.random() * 0.6));
-        updateMapDot(i, r.km, r.color, r.goal);
-      }
-    }, 2000);
+        updateMapDot(0, r.km, r.color, r.goal);
+      }, 2000);
+    }
   } else {
     onValue(ref(db, 'runners'), snap => {
       const data = snap.val() || {};
       for (let i = 0; i < 4; i++) {
-        const r = data['runner' + (i+1)] || {};
-        updateMapDot(i, r.km || 0, r.color || COLORS[i], r.goal || 10);
+        if (i === 0 || SHOW_ALL_RUNNERS) {
+          const r = data['runner' + (i+1)] || {};
+          updateMapDot(i, r.km || 0, r.color || COLORS[i], r.goal || 10);
+        } else {
+          hideMapDot(i);
+        }
       }
     });
   }
